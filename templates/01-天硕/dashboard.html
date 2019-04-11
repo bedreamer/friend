@@ -1,0 +1,61 @@
+{% extends "theme/base.html" %}
+
+{% block page-title %}{{ dev_model }}@{{ dev_address }}-Dashboard{% endblock %}
+
+{% block include-js %}
+    <script src="/static/js/jquery.js"></script>
+    <script src="/static/js/bootstrap.js"></script>
+{% endblock %}
+
+
+{% block inline-css %}
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css">
+{% endblock %}
+
+
+{% block inline-js %}
+{% endblock %}
+
+
+{% block include-css %}
+    <style>
+    .inline-iframe {
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+    }
+    </style>
+{% endblock %}
+
+
+{% block page-navbar %}
+    {% include "theme/base-dashboard-navbar.html" %}
+{% endblock %}
+
+
+{% block page-body %}
+    <div class="row">
+        <h1>&nbsp;</h1>
+    </div>
+    <div class="row">
+        <div class="col-sm-12" title="设备运行状态展示区">
+            <iframe class="inline-iframe" id="yaoxin" src="/{{ dev_model }}/{{ dev_address }}/yaoxin/" width="100%" height="150px" frameborder="0"></iframe>
+        </div>
+    </div>
+
+    <br>
+    <div class="row">
+        <div class="col-sm-12" title="设备运行数据面板" id="yaoce">
+            <iframe class="inline-iframe" src="/{{ dev_model }}/{{ dev_address }}/yaoce/" width="100%" height="350px" frameborder="0"></iframe>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12" title="设备遥调面板">
+            <iframe class="inline-iframe" src="/{{ dev_model }}/{{ dev_address }}/control/{% if request.control_page %}{{ request.control_page }}/{% endif %}" width="100%" height="230px" frameborder="0"></iframe>
+        </div>
+    </div>
+
+    <div id="tmp" class="hidden"></div>
+{% endblock %}
+

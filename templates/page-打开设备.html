@@ -1,0 +1,224 @@
+{% extends "theme/base.html" %}
+
+{% block page-title %}{% endblock %}
+
+{% block include-js %}
+    <script src="/static/js/jquery.js"></script>
+    <script src="/static/js/bootstrap.js"></script>
+{% endblock %}
+
+
+{% block inline-css %}
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css">
+{% endblock %}
+
+
+{% block inline-js %}
+{% endblock %}
+
+
+{% block include-css %}
+{% endblock %}
+
+
+{% block page-navbar %}
+    {#% include "theme/base-page-navbar.html" %#}
+{% endblock %}
+
+
+{% block page-body %}
+    <h1>配置打开的设备信息</h1>
+    <hr>
+
+    <div class="row">
+        <div class="col-sm-2 text-center">
+            {% if redis_server_process %}
+            <div class="alert alert-success" role="alert">
+                <span class="glyphicon glyphicon-ok-circle"></span>
+                redis进程
+            </div>
+            {% else %}
+            <div class="alert alert-danger" role="alert">
+                <span class="glyphicon glyphicon-remove-circle"></span>
+                redis进程
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="col-sm-2 text-center">
+            {% if serial_redirect_process %}
+            <div class="alert alert-success" role="alert">
+                <span class="glyphicon glyphicon-ok-circle"></span>
+                串口端口转发进程
+            </div>
+            {% else %}
+            <div class="alert alert-danger" role="alert">
+                <span class="glyphicon glyphicon-remove-circle"></span>
+                串口端口转发进程
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="col-sm-2 text-center">
+            {% if modbusd_process %}
+            <div class="alert alert-success" role="alert">
+                <span class="glyphicon glyphicon-ok-circle"></span>
+                设备驱动通讯进程
+            </div>
+            {% else %}
+            <div class="alert alert-danger" role="alert">
+                <span class="glyphicon glyphicon-remove-circle"></span>
+                设备驱动通讯进程
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="col-sm-2 text-center">
+            {% if bmsd_process %}
+            <div class="alert alert-success" role="alert">
+                <span class="glyphicon glyphicon-ok-circle"></span>
+                BMS通讯进程
+            </div>
+            {% else %}
+            <div class="alert alert-danger" role="alert">
+                <span class="glyphicon glyphicon-remove-circle"></span>
+                BMS通讯进程
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="col-sm-2 text-center">
+            {% if autocontrol_process %}
+            <div class="alert alert-success" role="alert">
+                <span class="glyphicon glyphicon-ok-circle"></span>
+                自动控制进程
+            </div>
+            {% else %}
+            <div class="alert alert-danger" role="alert">
+                <span class="glyphicon glyphicon-remove-circle"></span>
+                自动控制进程
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <form method="post" class="form">
+        <h3>外控设备配置信息</h3>
+        <hr>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <label for="dev_model">设备型号：</label>
+                <select class="form-control" id="dev_model" name="dev_model" required>
+                    <option value="">选择一个设备型号...</option>
+                    {% include "支持的设备型号.html" %}
+                </select>
+            </div>
+
+            <div class="col-sm-6">
+                <label for="dev_address">设备地址：</label>
+                <input class="form-control" required type="number" id="dev_address" name="dev_address" value="1" min="1" max="255" placeholder="MODBUS设备地址, 1~255">
+            </div>
+        </div>
+
+        <br>
+
+        <div class="row">
+            <div class="col-sm-3">
+                <label for="com_dev">通讯端口：</label>
+                <select class="form-control" id="com_dev" name="com_dev" required>
+                    <option value="">选择通讯端口...</option>
+                    {% include "串口支持的通讯端口.html" %}
+                </select>
+            </div>
+
+            <div class="col-sm-3">
+                <label for="serial_forward_port">串口转发端口：</label>
+                <input class="form-control" required type="number" id="serial_forward_port" value="7777" name="serial_forward_port" min="1024" max="65535" placeholder="串口转发端口, 1024~65535">
+                <input hidden id="serial_host" value="127.0.0.1" name="serial_host">
+            </div>
+
+            <div class="col-sm-3">
+                <label for="serial_host">串口转发服务器：</label>
+                <input class="form-control" id="serial_host" value="127.0.0.1" name="serial_host">
+            </div>
+        </div>
+
+        <br>
+
+        <div class="row">
+            <div class="col-sm-3">
+                <label for="baudrate">通讯波特率：</label>
+                <select class="form-control" id="baudrate" name="baudrate" required>
+                    <option value="">选择波特率...</option>
+                    {% include "串口支持的波特率.html" %}
+                </select>
+            </div>
+
+            <div class="col-sm-3">
+                <label for="bytesize">数据位：</label>
+                <select class="form-control" id="bytesize" name="bytesize" required>
+                    <option value="">选择数据位...</option>
+                    <option value="7">7</option>
+                    <option value="8" selected>8</option>
+                </select>
+            </div>
+
+            <div class="col-sm-3">
+                <label for="stopbit">停止位：</label>
+                <select class="form-control" id="stopbit" name="stopbit" required>
+                    <option value="">选择停止位...</option>
+                    <option value="0">0</option>
+                    <option value="1" selected>1</option>
+                </select>
+            </div>
+
+            <div class="col-sm-3">
+                <label for="parity">校验方式：</label>
+                <select class="form-control" id="parity" name="parity" required>
+                    <option value="">校验方式...</option>
+                    <option value="N">无</option>
+                    <option value="O">奇校验</option>
+                    <option value="E" selected>偶校验</option>
+                    <option value="S">空格</option>
+                    <option value="M">Mark</option>
+                </select>
+            </div>
+        </div>
+
+        <h3>BMS通讯设备配置信息</h3>
+        <hr>
+        <div class="row">
+            <div class="col-sm-4">
+                <label for="bms_model">BMS设备型号：</label>
+                <select class="form-control" id="bms_model" name="bms_model" required>
+                    <option value="">设备型号...</option>
+                    {% include "支持的BMS设备型号.html" %}
+                </select>
+            </div>
+
+            <div class="col-sm-4">
+                <label for="can_iface">CAN接口：</label>
+                <select class="form-control" id="can_iface" name="can_iface" required>
+                    <option value="">CAN接口...</option>
+                    {% include "CAN支持的通讯端口.html" %}
+                </select>
+            </div>
+
+            <div class="col-sm-4">
+                <label for="can_bps">通讯速率：</label>
+                <select class="form-control" id="can_bps" name="can_bps" required>
+                    <option value="">通讯速率...</option>
+                    {% include "CAN支持的波特率.html" %}
+                </select>
+            </div>
+        </div>
+
+        <h1>&nbsp;</h1>
+        <div class="row">
+            <div class="col-sm-offset-5 col-sm-2">
+                <input type="submit" value="启动程序" class="btn btn-block btn-primary">
+            </div>
+        </div>
+    </form>
+{% endblock %}

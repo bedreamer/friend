@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>通信通道选择</title>
+    {% include "base-head.html" %}
+	<script src="/static/js/wsapi.js"></script>
+	<script src="/static/js/newline.js"></script>
+    <style>
+        select {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 30px;
+        }
+
+        option {
+            text-align: right;
+        }
+
+    </style>
+
+    <script>
+		var api = WsApi('/newline/step/', 'onlwe.com:8888');
+        var newline = NewLine(api);
+        $(function () {
+			//$("button").bind("click", function () {
+			//    var all = $("select");
+			//    var pa = new Array();
+			//    for ( var i = 0; i < all.length; i ++) {
+			//        var s = all[i];
+			//        var name = $(s).attr('name');
+			//        var val = $(s).find("option:selected").val();
+			//        if ( val === undefined ) {
+			//            val = ''
+			//        }
+			//        pa.push(name + '=' + val);
+			//    }
+			//    pa.join('&');
+			//    console.log(pa.join('&'));
+			//    window.location = '{{ request.path }}' + '?' + encodeURI(pa.join('&'));
+			//});
+            //$("select").bind("change", function () {
+            //    var all = $("select");
+            //    var pa = new Array();
+            //    for ( var i = 0; i < all.length; i ++) {
+            //        var s = all[i];
+            //        var name = $(s).attr('name');
+            //        var val = $(s).find("option:selected").val();
+            //        if ( val === undefined ) {
+            //            val = ''
+            //        }
+            //        pa.push(name + '=' + val);
+            //    }
+            //    pa.join('&');
+            //    console.log(pa.join('&'));
+            //    window.location = '{{ request.path }}' + '?' + encodeURI(pa.join('&'));
+            //});
+        });
+	//页面刷新生成表格
+		$(document).ready(function () {
+            api.ready(function () {
+			   //jump_condition();
+            });
+        });
+	//整理数据，完成下发
+		function data_issue(){		
+			var all = $("select");
+			var pa = new Array();
+			for ( var i = 0; i < all.length; i ++) {
+			    var s = all[i];
+			    var name = $(s).attr('name');
+			    var val = $(s).find("option:selected").val();
+			    if ( val === undefined ) {
+			        val = ''
+			    }
+			    pa.push(name + '=' + val);
+			}
+			pa.join('&');
+			console.log(pa.join('&'));
+			//window.location = '{{ request.path }}' + '?' + encodeURI(pa.join('&'));
+			$('#begin').submit();
+		}
+	//动态生成跳转条件
+		function jump_condition(){
+			//生成BMS型号选择条件
+			newline.get_all_supported_conditions(function (data) {
+				var tab1="<div class=\"input-group\">";
+				tab1+="<select id=\"comparison_other1\" style=\"padding: 6px 0px\" class=\"form-control\">";
+				tab1+="<option value=\"\">选择比较对象</option>";
+				tab1+="<option value=\"wudx1\">N/A</option>";
+				for ( k in data ) {  
+					tab1+="<option value=" + data[k] + ">" + k +"</option>";
+				}
+				tab1+='</select>';
+				tab1+="<span class=\"input-group-addon\" id=\"condition11\">条件</span>";
+				tab1+='</div>';
+				bms_model.innerHTML=tab1;
+			}, function (response) {
+				// console.log('get_steps return fail, response=', response)
+			});
+			//生成BMS_CAN卡选择条件
+			newline.get_all_supported_conditions(function (data) {
+				var tab2="<div class=\"input-group\">";
+				tab2+="<select id=\"comparison_other2\" style=\"padding: 6px 0px\" class=\"form-control\">";
+				tab2+="<option value=\"\">选择比较对象</option>";
+				tab2+="<option value=\"wudx2\">N/A</option>";
+				for ( k in data ) {  
+					tab2+="<option value=" + data[k] + ">" + k +"</option>";
+				}
+				tab2+='</select>';
+				tab2+="<span class=\"input-group-addon\" id=\"condition21\">条件</span>";
+				tab2+='</div>';
+				bms_can_clip.innerHTML=tab2;
+			}, function (response) {
+				// console.log('get_steps return fail, response=', response)
+			});
+			//生成BMS_设备号选择条件
+			newline.get_all_supported_conditions(function (data) {
+				var tab3="<div class=\"input-group\">";
+				tab3+="<select id=\"comparison_other2\" style=\"padding: 6px 0px\" class=\"form-control\">";
+				tab3+="<option value=\"\">选择比较对象</option>";
+				tab3+="<option value=\"wudx2\">N/A</option>";
+				for ( k in data ) {  
+					tab3+="<option value=" + data[k] + ">" + k +"</option>";
+				}
+				tab3+='</select>';
+				tab3+="<span class=\"input-group-addon\" id=\"condition21\">条件</span>";
+				tab3+='</div>';
+				bms_device_number.innerHTML=tab3;
+			}, function (response) {
+				// console.log('get_steps return fail, response=', response)
+			});
+			//生成BMS_通道号选择条件
+			newline.get_all_supported_conditions(function (data) {
+				var tab4="<div class=\"input-group\">";
+				tab4+="<select id=\"comparison_other2\" style=\"padding: 6px 0px\" class=\"form-control\">";
+				tab4+="<option value=\"\">选择比较对象</option>";
+				tab4+="<option value=\"wudx2\">N/A</option>";
+				for ( k in data ) {  
+					tab4+="<option value=" + data[k] + ">" + k +"</option>";
+				}
+				tab4+='</select>';
+				tab4+="<span class=\"input-group-addon\" id=\"condition21\">条件</span>";
+				tab4+='</div>';
+				bms_aisle.innerHTML=tab4;
+			}, function (response) {
+				// console.log('get_steps return fail, response=', response)
+			});
+			//生成BMS_波特率选择条件
+			newline.get_all_supported_conditions(function (data) {
+				var tab5="<div class=\"input-group\">";
+				tab5+="<select id=\"comparison_other2\" style=\"padding: 6px 0px\" class=\"form-control\">";
+				tab5+="<option value=\"\">选择比较对象</option>";
+				tab5+="<option value=\"wudx2\">N/A</option>";
+				for ( k in data ) {  
+					tab5+="<option value=" + data[k] + ">" + k +"</option>";
+				}
+				tab5+='</select>';
+				tab5+="<span class=\"input-group-addon\" id=\"condition21\">条件</span>";
+				tab5+='</div>';
+				bms_baud_rate.innerHTML=tab5;
+			}, function (response) {
+				// console.log('get_steps return fail, response=', response)
+			});
+			//生成恒温/压设备型号选择条件
+			newline.get_all_supported_conditions(function (data) {
+				var tab6="<div class=\"input-group\">";
+				tab6+="<select id=\"comparison_other1\" style=\"padding: 6px 0px\" class=\"form-control\">";
+				tab6+="<option value=\"\">选择比较对象</option>";
+				tab6+="<option value=\"wudx1\">N/A</option>";
+				for ( k in data ) {  
+					tab6+="<option value=" + data[k] + ">" + k +"</option>";
+				}
+				tab6+='</select>';
+				tab6+="<span class=\"input-group-addon\" id=\"condition11\">条件</span>";
+				tab6+='</div>';
+				hwy_model.innerHTML=tab6;
+			}, function (response) {
+				// console.log('get_steps return fail, response=', response)
+			});
+			//生成恒温/压设备_CAN卡选择条件
+			newline.get_all_supported_conditions(function (data) {
+				var tab7="<div class=\"input-group\">";
+				tab7+="<select id=\"comparison_other2\" style=\"padding: 6px 0px\" class=\"form-control\">";
+				tab7+="<option value=\"\">选择比较对象</option>";
+				tab7+="<option value=\"wudx2\">N/A</option>";
+				for ( k in data ) {  
+					tab7+="<option value=" + data[k] + ">" + k +"</option>";
+				}
+				tab7+='</select>';
+				tab7+="<span class=\"input-group-addon\" id=\"condition21\">条件</span>";
+				tab7+='</div>';
+				hwy_can_clip.innerHTML=tab7;
+			}, function (response) {
+				// console.log('get_steps return fail, response=', response)
+			});
+			//生成恒温/压设备_设备号选择条件
+			newline.get_all_supported_conditions(function (data) {
+				var tab8="<div class=\"input-group\">";
+				tab8+="<select id=\"comparison_other2\" style=\"padding: 6px 0px\" class=\"form-control\">";
+				tab8+="<option value=\"\">选择比较对象</option>";
+				tab8+="<option value=\"wudx2\">N/A</option>";
+				for ( k in data ) {  
+					tab8+="<option value=" + data[k] + ">" + k +"</option>";
+				}
+				tab8+='</select>';
+				tab8+="<span class=\"input-group-addon\" id=\"condition21\">条件</span>";
+				tab8+='</div>';
+				hwy_device_number.innerHTML=tab8;
+			}, function (response) {
+				// console.log('get_steps return fail, response=', response)
+			});
+			//生成恒温/压设备_通道号选择条件
+			newline.get_all_supported_conditions(function (data) {
+				var tab9="<div class=\"input-group\">";
+				tab9+="<select id=\"comparison_other2\" style=\"padding: 6px 0px\" class=\"form-control\">";
+				tab9+="<option value=\"\">选择比较对象</option>";
+				tab9+="<option value=\"wudx2\">N/A</option>";
+				for ( k in data ) {  
+					tab9+="<option value=" + data[k] + ">" + k +"</option>";
+				}
+				tab9+='</select>';
+				tab9+="<span class=\"input-group-addon\" id=\"condition21\">条件</span>";
+				tab9+='</div>';
+				hwy_aisle.innerHTML=tab9;
+			}, function (response) {
+				// console.log('get_steps return fail, response=', response)
+			});
+			//生成恒温/压设备_波特率选择条件
+			newline.get_all_supported_conditions(function (data) {
+				var tab10="<div class=\"input-group\">";
+				tab10+="<select id=\"comparison_other2\" style=\"padding: 6px 0px\" class=\"form-control\">";
+				tab10+="<option value=\"\">选择比较对象</option>";
+				tab10+="<option value=\"wudx2\">N/A</option>";
+				for ( k in data ) {  
+					tab10+="<option value=" + data[k] + ">" + k +"</option>";
+				}
+				tab10+='</select>';
+				tab10+="<span class=\"input-group-addon\" id=\"condition21\">条件</span>";
+				tab10+='</div>';
+				hwy_baud_rate.innerHTML=tab10;
+			}, function (response) {
+				// console.log('get_steps return fail, response=', response)
+			});	
+		}	
+		
+	</script>	
+</head>
+<body>
+    {% include "base-navbar-top.html" %}
+
+    <div class="container-fluid">
+
+        {% if request.GET.e %}
+        <div class="row">
+            <div class="col-xs-offset-1 col-xs-10">
+                <div class="alert alert-warning alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong>Warning!</strong>&nbsp;&nbsp;&nbsp;<span>{{ request.GET.e }}</span>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="col-xs-offset-1 col-xs-10">
+            <div class="row">
+                <h2>
+                    <span class="glyphicon glyphicon-cog text-primary"></span>
+                    设备通道配置
+                </h2>
+                <hr>
+            </div>
+
+            <form method="post" action="{{ request.path }}">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="row">
+                            <div class="col-xs-2 withunderline">
+                                <h4><span class="label label-success">B M S</span></h4>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <label>型号</label>
+                            </div>
+                        </div>
+						
+                        <div class="row">
+							<div class="col-xs-9" id="bms_model">
+								<select id="bms_model1" style="padding: 6px 0px" class="form-control" name="bms_model">
+									<option value="">请选择BMS型号...</option>
+									<option value="BMS">N/A</option>
+									<option value="BMS1">BMS1</option>
+									<option value="BMS2">BMS2</option>
+									<option value="BMS3">BMS3</option>
+								</select>
+							</div>
+                            <!--<div class="col-xs-9">
+                                <select name="bms_model">
+                                    {% for bms in bms_supported_model_list %}
+                                        <option value="{{ bms.id }}" {% if bms_model == bms.id %}selected{% endif %}>{{ bms.model }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>-->
+                            <div class="col-xs-1">
+                                {% if bms_model %}
+                                <a class="btn btn-default btn-block btn-sm"><span class="glyphicon glyphicon-edit"></span></a>
+                                {% endif %}
+                            </div>
+                            <div class="col-xs-2">
+                                <a class="btn btn-info btn-block btn-sm">添加...</a>
+                            </div>
+                        </div>
+                        <br>
+
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <label>CAN卡:&nbsp;</label>
+                            </div>
+                            <div class="col-xs-2">
+                                <label>设备号:&nbsp;</label>
+                            </div>
+                            <div class="col-xs-2">
+                                <label>通道:&nbsp;</label>
+                            </div>
+                            <div class="col-xs-2">
+                                <label>波特率:&nbsp;</label>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-5" id="bms_can_clip">
+								<select id="bms_can_clip1" style="padding: 6px 0px" class="form-control" name="bms_can_model">
+									<option value="">请选择CAN卡...</option>
+									<option value="CAN">N/A</option>
+									<option value="USBCAN-2E-U">USBCAN-2E-U</option>
+								</select>
+                                <!--<select name="bms_can_model">
+                                    {% for can in bms_supported_can_model_list %}
+                                        <option value="{{ can }}" {% if bms_can_model == can %}selected{% endif %}>{{ can }}</option>
+                                    {% endfor %}
+                                </select>-->
+                            </div>
+
+                            <div class="col-xs-2" id="bms_device_number">
+                                <select id="bms_device_number1" style="padding: 6px 0px" class="form-control" name="bms_can_idx">
+									<option value="">请选择设备号...</option>
+									<option value="facility">N/A</option>
+									<option value="facility1">1</option>
+									<option value="facility2">2</option>
+								</select>
+								<!--<select name="bms_can_idx">
+                                    {% for idx in bms_can_supported_idx_list %}
+                                        <option value="{{ idx }}" {% if idx == bms_can_idx %}selected{% endif %}>{{ idx|add:1 }}</option>
+                                    {% endfor %}
+                                </select>-->
+                            </div>
+
+                            <div class="col-xs-2" id="bms_aisle">
+								<select id="bms_aisle1" style="padding: 6px 0px" class="form-control" name="bms_can_channel">
+									<option value="">请选择通道...</option>
+									<option value="aisle">N/A</option>
+									<option value="aisle1">1</option>
+									<option value="aisle2">2</option>
+								</select>
+                                <!--<select name="bms_can_channel">
+                                    {% for ch in bms_can_supported_channel_list %}
+                                        <option value="{{ ch }}" {% if ch == bms_can_channel %}selected{% endif %}>{{ ch|add:1 }}</option>
+                                    {% endfor %}
+                                </select>-->
+                            </div>
+
+                            <div class="col-xs-3" id="bms_baud_rate">
+								<select id="bms_baud_rate1" style="padding: 6px 0px" class="form-control" name="bms_can_bps">
+									<option value="">请选择波特率...</option>
+									<option value="btl">N/A</option>
+									<option value="50Kbps">50Kbps</option>
+									<option value="100Kbps">100Kbps</option>
+									<option value="125Kbps">125Kbps</option>
+								</select>
+                                <!--<select name="bms_can_bps">
+                                    {% for bps in bms_supported_bps_list %}
+                                        <option value="{{ bps }}" {% if bps == bms_can_bps %}selected{% endif %}>{{ bps }}</option>
+                                    {% endfor %}
+                                </select>-->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row"><h4>&nbsp;</h4></div>
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="row">
+                            <div class="col-xs-2">
+                                <h4><span class="label label-success">恒 温 / 压 设 备</span></h4>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-2">
+                                <label>型号</label>
+                            </div>
+                        </div>
+						
+                        <div class="row">
+							<div class="col-xs-9" id="hwy_model ">
+								<select id="hwy_model1" style="padding: 6px 0px" class="form-control" name="modbus_dev_model">
+									<option value="">请选择恒温/压设备型号...</option>
+									<option value="hwhy">N/A</option>
+									<option value="CT100">CT100</option>
+								</select>
+							</div>
+                             <!--<div class="col-xs-9">
+                               <select name="modbus_dev_model">
+                                    {% for dev in modbus_supported_dev_model_list %}
+                                    <option value="{{ dev.id }}" {% if modbus_dev_model == dev.id %}selected{% endif %}>{{ dev.name }}-{{ dev.model }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>-->
+                            <div class="col-xs-1">
+                                {% if modbus_dev_model %}
+                                <a class="btn btn-default btn-block btn-sm" href="/admin/ui/modbusdevice/{{ modbus_dev_model }}/change/">
+                                    <span class="glyphicon glyphicon-edit"></span>
+                                </a>
+                                {% endif %}
+                            </div>
+                            <div class="col-xs-2">
+                                <a class="btn btn-info btn-block btn-sm" href="/admin/ui/modbusdevice/add/">添加...</a>
+                            </div>
+                        </div>
+                        <br>
+
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <label>CAN卡:&nbsp;</label>
+                            </div>
+                            <div class="col-xs-2">
+                                <label>设备号:&nbsp;</label>
+                            </div>
+                            <div class="col-xs-2">
+                                <label>通道:&nbsp;</label>
+                            </div>
+                            <div class="col-xs-2">
+                                <label>波特率:&nbsp;</label>
+                            </div>
+                        </div>
+						
+                        <div class="row">
+                            <div class="col-xs-5" id="hwy_can_clip">
+								<select id="hwy_can_clip1" style="padding: 6px 0px" class="form-control" name="modbus_can_model">
+									<option value="">请选择CAN卡...</option>
+									<option value="CAN">N/A</option>
+									<option value="USBCAN-2E-U">USBCAN-2E-U</option>
+								</select>
+                                <!--<select name="modbus_can_model">
+                                    {% for can in modbus_supported_can_model_list %}
+                                        <option value="{{ can }}" {% if modbus_can_model == can %}selected{% endif %}>{{ can }}</option>
+                                    {% endfor %}
+                                </select>-->
+                            </div>
+
+                             <div class="col-xs-2" id="hwy_device_number">
+                                <select id="hwy_device_number1" style="padding: 6px 0px" class="form-control" name="modbus_can_idx">
+									<option value="">请选择设备号...</option>
+									<option value="facility">N/A</option>
+									<option value="facility1">1</option>
+									<option value="facility2">2</option>
+								</select>
+                                <!--<select name="modbus_can_idx">
+                                    {% for idx in modbus_can_supported_idx_list %}
+                                        <option value="{{ idx }}" {% if idx == modbus_can_idx %}selected{% endif %}>{{ idx|add:1 }}</option>
+                                    {% endfor %}
+                                </select>-->
+                            </div>
+
+                             <div class="col-xs-2" id="hwy_aisle">
+								<select id="hwy_aisle1" style="padding: 6px 0px" class="form-control" name="modbus_can_channel">
+									<option value="">请选择通道...</option>
+									<option value="aisle">N/A</option>
+									<option value="aisle1">1</option>
+									<option value="aisle2">2</option>
+								</select>
+                                <!--<select name="modbus_can_channel">
+                                    {% for ch in modbus_can_supported_channel_list %}
+                                        <option value="{{ ch }}" {% if ch == modbus_can_channel %}selected{% endif %}>{{ ch|add:1 }}</option>
+                                    {% endfor %}
+                                </select>-->
+                            </div>
+
+                             <div class="col-xs-3" id="hwy_baud_rate">
+								<select id="hwy_baud_rate1" style="padding: 6px 0px" class="form-control" name="modbus_can_bps">
+									<option value="">请选择波特率...</option>
+									<option value="btl">N/A</option>
+									<option value="50Kbps">50Kbps</option>
+									<option value="100Kbps">100Kbps</option>
+									<option value="125Kbps">125Kbps</option>
+								</select>
+                                <!--<select name="modbus_can_bps">
+                                    {% for bps in modbus_supported_bps_list %}
+                                        <option value="{{ bps }}" {% if bps == modbus_can_bps %}selected{% endif %}>{{ bps }}</option>
+                                    {% endfor %}
+                                </select>-->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <h1>&nbsp;</h1>
+                <div class="row">
+                    <!--div class="col-xs-2">
+                        <a class="btn btn-warning btn-sm btn-block">
+                            <span class="glyphicon glyphicon-open-file"></span>
+                            加载配置
+                        </a>
+                    </div>
+                    <div class="col-xs-2">
+                        <a class="btn btn-danger btn-sm btn-block">
+                            <span class="glyphicon glyphicon-save-file"></span>
+                            保存配置
+                        </a>
+                    </div-->
+                    <div class="col-xs-offset-3 col-xs-5">
+						<button type="button" id="begin" class="btn btn-primary btn-lg btn-block glyphicon" onClick="javascript:data_issue()">开 始</button>
+                        <!--<input type="submit" value="开 始" class="btn btn-primary btn-lg btn-block glyphicon glyphicon-send"></input>-->
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    <script src="/static/js/bootstrap.js"></script>
+</body>
+</html>

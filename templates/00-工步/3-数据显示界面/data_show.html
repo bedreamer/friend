@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数据显示界面</title>
+    {% include "base-head.html" %}
+	<script src="/static/js/wsapi.js"></script>
+	<script src="/static/js/newline.js"></script>
+    <style>
+        select {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 30px;
+        }
+
+        option {
+            text-align: right;
+        }
+    </style>
+	
+	<script>
+		//var api = WsApi('/newline/step/', 'onlwe.com:8888');
+        //var newline = NewLine(api);	
+		//模拟函数1
+		function simulation(){
+			var data = {
+				"status": "ok",
+				"reason": "AAA",
+				"yc": {
+					"工作模式": "加热模式",
+					"供液流量": "10",
+					"供液压力": "20",
+					"回液压力": "30",
+					"供液温度": "25",
+					"回液温度": "20",
+					"阀门开度": "30",
+				},
+				"yx": {
+					"加热器运行状态": "分",		//1=="合"，0=="分"
+					"压缩机运行状态": "分",
+					"循环泵运行状态": "分",
+				}
+			}
+			return data;
+		}
+		//模拟函数2
+		function simulation1(){
+			var data = {
+				"status": "ok",
+				"reason": "AAA",
+				"yc": {
+					"电池平均温度": "30",
+					"最高电池温度": "10",
+					"最低电池温度": "20",
+					"电池电压": "30",
+					"电池电流": "25",
+				},
+				"yx": {
+					"加热允许状态": "分",		//1=="合"，0=="分"
+					"制冷允许状态": "分",
+				}
+			}
+			return data;
+		}
+		//解析函数
+		function analysis_data() { 
+			//查询设备数据
+			$.getJSON("/v1.0/json/newline/?tsp=timestamp", '', function(data, status, xhr){
+				//var data = simulation();
+				if ( data.status === 'ok' ) {
+					//查询设备数据成功
+					var yc_data = data.yc;
+					var yx_data = data.yx;
+					$("#gzms").val(yc_data["工作模式"]);
+					$("#gyll").val(yc_data["供液流量"]);
+					$("#gyyl").val(yc_data["供液压力"]);
+					$("#hyyl").val(yc_data["回液压力"]);
+					$("#gywd").val(yc_data["供液温度"]);
+					$("#hywd").val(yc_data["回液温度"]);
+					$("#fmkd").val(yc_data["阀门开度"]);
+					var jrqzt = yx_data["加热器运行状态"];
+					if(jrqzt == "合"){
+						var tab1="<div class=\"\">";
+						tab1+="<output type=\"text\" class=\"form-control btn-info\" id=\"jrqzt_h1\"><center>合</center></output>";
+						tab1+="</div>";
+						jrqzt_h.innerHTML=tab1;
+						var tab2="<div class=\"\">";
+						tab2+="<output type=\"text\" class=\"form-control\" id=\"jrqzt_f1\"><center>分</center></output>";
+						tab2+="</div>";
+						jrqzt_f.innerHTML=tab2;
+					}else if(jrqzt == "分"){
+						var tab1="<div class=\"\">";
+						tab1+="<output type=\"text\" class=\"form-control\" id=\"jrqzt_h1\"><center>合</center></output>";
+						tab1+="</div>";
+						jrqzt_h.innerHTML=tab1;
+						var tab2="<div class=\"\">";
+						tab2+="<output type=\"text\" class=\"form-control btn-info\" id=\"jrqzt_f1\"><center>分</center></output>";
+						tab2+="</div>";
+						jrqzt_f.innerHTML=tab2;
+					}
+					var ysjzt = yx_data["压缩机运行状态"];
+					if(ysjzt == "合"){
+						var tab3="<div class=\"\">";
+						tab3+="<output type=\"text\" class=\"form-control btn-info\" id=\"ysjzt_h1\"><center>合</center></output>";
+						tab3+="</div>";
+						ysjzt_h.innerHTML=tab3;
+						var tab4="<div class=\"\">";
+						tab4+="<output type=\"text\" class=\"form-control\" id=\"ysjzt_f1\"><center>分</center></output>";
+						tab4+="</div>";
+						ysjzt_f.innerHTML=tab4;
+					}else if(ysjzt == "分"){
+						var tab3="<div class=\"\">";
+						tab3+="<output type=\"text\" class=\"form-control\" id=\"ysjzt_h1\"><center>合</center></output>";
+						tab3+="</div>";
+						ysjzt_h.innerHTML=tab3;
+						var tab4="<div class=\"\">";
+						tab4+="<output type=\"text\" class=\"form-control btn-info\" id=\"ysjzt_f1\"><center>分</center></output>";
+						tab4+="</div>";
+						ysjzt_f.innerHTML=tab4;
+					}
+					var xhbzt = yx_data["循环泵运行状态"];
+					if(xhbzt == "合"){
+						var tab5="<div class=\"\">";
+						tab5+="<output type=\"text\" class=\"form-control btn-info\" id=\"xhbzt_h1\"><center>合</center></output>";
+						tab5+="</div>";
+						xhbzt_h.innerHTML=tab5;
+						var tab6="<div class=\"\">";
+						tab6+="<output type=\"text\" class=\"form-control\" id=\"xhbzt_f1\"><center>分</center></output>";
+						tab6+="</div>";
+						xhbzt_f.innerHTML=tab6;
+					}else if(xhbzt == "分"){
+						var tab5="<div class=\"\">";
+						tab5+="<output type=\"text\" class=\"form-control\" id=\"xhbzt_h1\"><center>合</center></output>";
+						tab5+="</div>";
+						xhbzt_h.innerHTML=tab5;
+						var tab6="<div class=\"\">";
+						tab6+="<output type=\"text\" class=\"form-control btn-info\" id=\"xhbzt_f1\"><center>分</center></output>";
+						tab6+="</div>";
+						xhbzt_f.innerHTML=tab6;
+					}
+					var tab7="";
+					div1.innerHTML=tab7;				//清除查询设备数据失败的打印信息
+				}else{
+					//查询设备数据失败
+					var tab8="<table border=1 width=100% height=40 class=\"table-bordered table-striped table-responsive\")>";
+					tab8+="<tr>";
+					tab8+="<td style=\"color:red\"><font size=\"4\"><b>&nbsp&nbsp查询设备数据失败，失败原因="+ data.reason  +"！！！<b></font></tb>";
+					tab8+="</tr>";
+					tab8+="</table>";
+					div1.innerHTML=tab8;				//动态打印查询设备数据失败的错误信息
+				}
+			});
+			//查询BMS设备数据
+			$.getJSON("/v1.0/json/bms/?tsp=timestamp", '', function(data, status, xhr){
+				//var data = simulation1();
+				if ( data.status === 'ok' ) {
+					//查询BMS设备数据成功
+					var yc_data = data.yc;
+					var yx_data = data.yx;
+					$("#dcpjwd").val(yc_data["电池平均温度"]);
+					$("#dczgwd").val(yc_data["最高电池温度"]);
+					$("#dczdwd").val(yc_data["最低电池温度"]);
+					$("#dcdy").val(yc_data["电池电压"]);
+					$("#dcdl").val(yc_data["电池电流"]);
+					var jryxzt = yx_data["加热允许状态"];
+					if(jryxzt == "合"){
+						var tab1="<div class=\"\">";
+						tab1+="<output type=\"text\" class=\"form-control btn-info\" id=\"jryxzt_h1\"><center>合</center></output>";
+						tab1+="</div>";
+						jryxzt_h.innerHTML=tab1;
+						var tab2="<div class=\"\">";
+						tab2+="<output type=\"text\" class=\"form-control\" id=\"jryxzt_f1\"><center>分</center></output>";
+						tab2+="</div>";
+						jryxzt_f.innerHTML=tab2;
+					}else if(jryxzt == "分"){
+						var tab1="<div class=\"\">";
+						tab1+="<output type=\"text\" class=\"form-control\" id=\"jryxzt_h1\"><center>合</center></output>";
+						tab1+="</div>";
+						jryxzt_h.innerHTML=tab1;
+						var tab2="<div class=\"\">";
+						tab2+="<output type=\"text\" class=\"form-control btn-info\" id=\"jryxzt_f1\"><center>分</center></output>";
+						tab2+="</div>";
+						jryxzt_f.innerHTML=tab2;
+					}
+					var zlyxzt = yx_data["制冷允许状态"];
+					if(zlyxzt == "合"){
+						var tab3="<div class=\"\">";
+						tab3+="<output type=\"text\" class=\"form-control btn-info\" id=\"zlyxzt_h1\"><center>合</center></output>";
+						tab3+="</div>";
+						zlyxzt_h.innerHTML=tab3;
+						var tab4="<div class=\"\">";
+						tab4+="<output type=\"text\" class=\"form-control\" id=\"zlyxzt_f1\"><center>分</center></output>";
+						tab4+="</div>";
+						zlyxzt_f.innerHTML=tab4;
+					}else if(zlyxzt == "分"){
+						var tab3="<div class=\"\">";
+						tab3+="<output type=\"text\" class=\"form-control\" id=\"zlyxzt_h1\"><center>合</center></output>";
+						tab3+="</div>";
+						zlyxzt_h.innerHTML=tab3;
+						var tab4="<div class=\"\">";
+						tab4+="<output type=\"text\" class=\"form-control btn-info\" id=\"zlyxzt_f1\"><center>分</center></output>";
+						tab4+="</div>";
+						zlyxzt_f.innerHTML=tab4;
+					}
+					var tab9="";
+					div1.innerHTML=tab9;				//清除查询BMS设备数据失败的打印信息	
+				}else{
+					//查询BMS设备数据失败
+					var tab10="<table border=1 width=100% height=40 class=\"table-bordered table-striped table-responsive\")>";
+					tab10+="<tr>";
+					tab10+="<td style=\"color:red\"><font size=\"4\"><b>&nbsp&nbsp查询BMS设备数据失败，失败原因="+ data.reason  +"！！！<b></font></tb>";
+					tab10+="</tr>";
+					tab10+="</table>";
+					div1.innerHTML=tab10;				//动态打印查询BMS设备数据失败的错误信息
+				} 
+			});
+		}  
+		//指定5秒调用一次解析函数
+		setInterval('analysis_data()',5000); 
+	</script>
+		
+</head>
+<body>
+    {% include "base-navbar-top.html" %}
+
+    <div class="container">
+
+        {% if request.GET.e %}
+        <div class="row">
+            <div class="col-xs-offset-1 col-xs-10">
+                <div class="alert alert-warning alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong>Warning!</strong>&nbsp;&nbsp;&nbsp;<span>{{ request.GET.e }}</span>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="container">
+            <div class="row">
+                <h3>
+                    <span class="glyphicon glyphicon-pushpin text-primary"></span>
+                    设备实时数据显示
+                </h3>
+                <hr>
+            </div>
+
+            <form method="post" action="{{ request.path }}">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="row">
+                            <div class="col-xs-2 withunderline ">
+                                <h4><b><font color="#00BB00">恒 温 / 压 设 备</font></b></h4>
+                            </div>
+                        </div>
+						
+						<div class="row">	
+							<div style="width: 25%" class="col-xs-2">
+								<label><h5><b>工作模式:&nbsp;</b></h5></label>
+							</div>
+							<div style="width: 25%" class="col-xs-2">
+								<label><h5><b>供液流量:&nbsp;</b></h5></label>
+							</div>
+							<div style="width: 25%" class="col-xs-2">
+								<label><h5><b>供液压力:&nbsp;</b></h5></label>
+							</div>
+							<div style="width: 25%" class="col-xs-2">
+								<label><h5><b>回液压力:&nbsp;</b></h5></label>
+							</div>
+						</div>
+						<div class="row">
+							<div style="width: 25%" class="col-xs-1">
+								<div class="input-group">
+									<output type="text" class="form-control" id="gzms"></output>
+									<span class="input-group-addon" id="temperature1">模式</span>
+								</div>
+							</div>
+							<div style="width: 25%" class="col-xs-1">
+								<div class="input-group">
+									<output type="text" class="form-control" id="gyll">0</output>
+									<span class="input-group-addon" id="flow1">L/min</span>
+								</div>
+							</div>
+							<div style="width: 25%" class="col-xs-1">
+								<div class="input-group">
+									<output type="text" class="form-control" id="gyyl">0</output>
+									<span class="input-group-addon" id="temperature1">bar</span>
+								</div>
+							</div>
+							<div style="width: 25%" class="col-xs-1">
+								<div class="input-group">
+									<output type="text" class="form-control" id="hyyl">0</output>
+									<span class="input-group-addon" id="flow1">bar</span>
+								</div>
+							</div>
+						</div>
+						
+						<div class="row"><p></p></div>
+						
+						<div class="row">	
+							<div style="width: 25%" class="col-xs-2">
+								<label><h5><b>供液温度:&nbsp;</b></h5></label>
+							</div>
+							<div style="width: 25%" class="col-xs-2">
+								<label><h5><b>回液温度:&nbsp;</b></h5></label>
+							</div>
+							<div style="width: 25%" class="col-xs-2">
+								<label><h5><b>阀门开度:&nbsp;</b></h5></label>
+							</div>
+							<div style="width: 25%" class="col-xs-2">
+								<label><h5><b>加热器运行状态:&nbsp;</b></h5></label>
+							</div>
+						</div>
+						<div class="row">
+							<div style="width: 25%" class="col-xs-1">
+								<div class="input-group">
+									<output type="text" class="form-control" id="gywd">0</output>
+									<span class="input-group-addon" id="flow1">℃</span>
+								</div>
+							</div>
+							<div style="width: 25%" class="col-xs-1">
+								<div class="input-group">
+									<output type="text" class="form-control" id="hywd">0</output>
+									<span class="input-group-addon" id="flow1">℃</span>
+								</div>
+							</div>
+							<div style="width: 25%" class="col-xs-1">
+								<div class="input-group">
+									<output type="text" class="form-control" id="fmkd">0</output>
+									<span class="input-group-addon" id="flow1">%</span>
+								</div>
+							</div>
+							<div style="width: 12.5%" class="col-xs-1" id="jrqzt_h">
+								<div class="">
+									<output type="text" class="form-control" id="jrqzt_h1"><center>合</center></output>
+								</div>
+							</div>
+							<div style="width: 12.5%" class="col-xs-1" id="jrqzt_f">
+								<div class="">
+									<output type="text" class="form-control" id="jrqzt_f1"><center>分</center></output>
+								</div>
+							</div>
+						</div>
+						
+						<div class="row"><p></p></div>
+						
+						<div class="row">	
+							<div style="width: 25%" class="col-xs-2">
+								<label><h5><b>压缩机运行状态:&nbsp;</b></h5></label>
+							</div>
+							<div style="width: 25%" class="col-xs-2">
+								<label><h5><b>循环泵运行状态:&nbsp;</b></h5></label>
+							</div>
+						</div>
+						<div class="row">
+							<div style="width: 12.5%" class="col-xs-1" id="ysjzt_h">
+								<div class="">
+									<output type="text" class="form-control" id="ysjzt_h1"><center>合</center></output>
+								</div>
+							</div>
+							<div style="width: 12.5%" class="col-xs-1" id="ysjzt_f">
+								<div class="">
+									<output type="text" class="form-control" id="ysjzt_f1"><center>分</center></output>
+								</div>
+							</div>
+							<div style="width: 12.5%" class="col-xs-1" id="xhbzt_h">
+								<div class="">
+									<output type="text" class="form-control" id="xhbzt_h1"><center>合</center></output>
+								</div>
+							</div>
+							<div style="width: 12.5%" class="col-xs-1" id="xhbzt_f">
+								<div class="">
+									<output type="text" class="form-control" id="xhbzt_f1"><center>分</center></output>
+								</div>
+							</div>
+						</div>
+						
+						<div class="row"><p></p></div>
+						
+						 <div class="row">
+                             <div class="col-xs-2 withunderline ">
+                                <h4><b><font color="#00BB00">B M S 设 备</font></b></h4>
+                            </div>
+                        </div>
+						
+						<div class="row">	
+							<div style="width: 25%" class="col-xs-2">
+								<label><h5><b>电池平均温度:&nbsp;</b></h5></label>
+							</div>
+							<div style="width: 25%" class="col-xs-2">
+								<label><h5><b>最高电池温度:&nbsp;</b></h5></label>
+							</div>
+							<div style="width: 25%" class="col-xs-2">
+								<label><h5><b>最低电池温度:&nbsp;</b></h5></label>
+							</div>
+							<div style="width: 25%" class="col-xs-2">
+								<label><h5><b>电池电压:&nbsp;</b></h5></label>
+							</div>
+						</div>
+						<div class="row">
+							<div style="width: 25%" class="col-xs-1">
+								<div class="input-group">
+									<output type="text" class="form-control" id="dcpjwd">0</output>
+									<span class="input-group-addon" id="temperature1">℃</span>
+								</div>
+							</div>
+							<div style="width: 25%" class="col-xs-1">
+								<div class="input-group">
+									<output type="text" class="form-control" id="dczgwd">0</output>
+									<span class="input-group-addon" id="temperature1">℃</span>
+								</div>
+							</div>
+							<div style="width: 25%" class="col-xs-1">
+								<div class="input-group">
+									<output type="text" class="form-control" id="dczdwd">0</output>
+									<span class="input-group-addon" id="temperature1">℃</span>
+								</div>
+							</div>
+							<div style="width: 25%" class="col-xs-1">
+								<div class="input-group">
+									<output type="text" class="form-control" id="dcdy">0</output>
+									<span class="input-group-addon" id="flow1">V</span>
+								</div>
+							</div>
+						</div>
+						
+						<div class="row"><p></p></div>
+						
+						<div class="row">	
+							<div style="width: 25%" class="col-xs-2">
+								<label><h5><b>电池电流:&nbsp;</b></h5></label>
+							</div>
+							<div style="width: 25%" class="col-xs-2">
+								<label><h5><b>加热允许状态:&nbsp;</b></h5></label>
+							</div>
+							<div style="width: 25%" class="col-xs-2">
+								<label><h5><b>制冷允许状态:&nbsp;</b></h5></label>
+							</div>
+						</div>
+						<div class="row">
+							<div style="width: 25%" class="col-xs-1">
+								<div class="input-group">
+									<output type="text" class="form-control" id="dcdl">0</output>
+									<span class="input-group-addon" id="temperature1">A</span>
+								</div>
+							</div>
+							<div style="width: 12.5%" class="col-xs-1" id="jryxzt_h">
+								<div class="">
+									<output type="text" class="form-control" id="jryxzt_h1"><center>合</center></output>
+								</div>
+							</div>
+							<div style="width: 12.5%" class="col-xs-1" id="jryxzt_f">
+								<div class="">
+									<output type="text" class="form-control" id="jryxzt_f1"><center>分</center></output>
+								</div>
+							</div>
+							<div style="width: 12.5%" class="col-xs-1" id="zlyxzt_h">
+								<div class="">
+									<output type="text" class="form-control" id="zlyxzt_h1"><center>合</center></output>
+								</div>
+							</div>
+							<div style="width: 12.5%" class="col-xs-1" id="zlyxzt_f">
+								<div class="">
+									<output type="text" class="form-control" id="zlyxzt_f1"><center>分</center></output>
+								</div>
+							</div>
+						</div>
+					
+						<div class="row"><h6></h6></div>
+						
+					</div>	
+				</div>		
+			
+                <div class="row"><h6>&nbsp;</h6></div>
+				
+				<div id="div1"></div>
+
+            </form>
+        </div>
+    </div>
+</body>
+</html>		
+
+
+
+
+
+
+

@@ -1,0 +1,51 @@
+{% extends "theme/base.html" %}
+
+{% block page-title %}天硕控制面板{% endblock %}
+
+{% block include-js %}
+    <script src="/static/js/jquery.js"></script>
+    <script src="/static/js/bootstrap.js"></script>
+{% endblock %}
+
+
+{% block inline-css %}
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css">
+{% endblock %}
+
+
+{% block inline-js %}
+{% endblock %}
+
+
+{% block include-css %}
+    <style>
+    body {
+        overflow: hidden;
+    }
+    </style>
+{% endblock %}
+
+
+{% block page-navbar %}
+    <table class="table table-striped table-bordered">
+        <caption>
+             <div class="row">
+                <div class="col-sm-12">设备基本信息</div>
+            </div>
+        </caption>
+
+        <tr>
+            <th>设备型号</th>
+            <th>{{ dev_model }}</th>
+        </tr>
+
+        <tr>
+            <th>设备地址</th>
+            <th>{{ dev_address }}</th>
+        </tr>
+    </table>
+{% endblock %}
+
+
+{% block page-body %}
+{% endblock %}

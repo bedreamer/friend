@@ -1,0 +1,340 @@
+{% extends "theme/base.html" %}
+
+{% block page-title %}设备遥调{% endblock %}
+
+{% block include-js %}
+    <script src="/static/js/jquery.js"></script>
+    <script src="/static/js/bootstrap.js"></script>
+	<script src="/static/js/wsapi.js"></script>
+	<script src="/static/js/newline.js"></script>
+{% endblock %}
+
+
+{% block include-css %}
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css">
+{% endblock %}
+
+
+{% block inline-css %}
+    <style>
+    body {
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+    }
+    </style>
+{% endblock %}
+
+
+{% block inline-js %}
+	<script>
+		//10秒调用一次动态生成表函数
+		setInterval('dynamic_list()',5000); 
+		//动态生成表(已改完)
+		function dynamic_list(){
+			var mycars = new Array()
+			var rows = 1;
+			var tab;
+			var tab1 = "";
+			mycars[ 0] = "执行状态"
+			mycars[ 1] = "工步编号"
+			mycars[ 2] = "工步名称"
+			mycars[ 3] = "运行时间(秒)"
+			mycars[ 4] = "流量设定(L/min)"
+			mycars[ 5] = "温度设定(℃)"
+			mycars[ 6] = "加热百分比(%)"
+			mycars[ 7] = "循环模式"
+			mycars[ 8] = "跳转条件1"
+			mycars[ 9] = "逻辑关系"
+			mycars[10] = "跳转条件2"
+			mycars[11] = "匹配"
+			mycars[12] = "不匹配"
+			mycars[13] = "总循环次数"
+			mycars[14] = "激活时戳"
+			mycars[15] = "运行总时长"
+			//mycars[13] = "工步操作"
+			var return_data = "";
+			$.getJSON("/v1.0/json/step/operation/get/", '', function(data, status, xhr){
+				if ( data.status === "ok" ) {
+					//当前有工步在运行
+					var tab1="<h3><button type=\"button\" style=\"height:30px;width:30px;\" class=\"btn btn-xs btn-danger\" onClick=\"javascript:stop_steps()\"><span class=\"link glyphicon glyphicon-stop\"></span></button>";
+					tab1+="<button type=\"button\" style=\"height:30px;width:30px;\" class=\"btn btn-xs btn-primary\" onClick=\"javascript:check_all_steps()\"><span class=\"link glyphicon glyphicon-search\"></span></button>";
+					tab1+="<button type=\"button\" style=\"height:30px;width:30px;\" class=\"btn btn-xs btn-success.focus\" onClick=\"javascript:skip_page()\"><span class=\"link glyphicon glyphicon-edit\"></span></button><h3>";
+					button_hurdle.innerHTML=tab1;				//动态显示按钮栏
+					cols=16;
+					//cols=14;
+					div1=document.getElementById('div1');
+					heights = 50*(rows+1);
+					height = String(heights);
+					tab="<table border=1 width=100% height=" + height + " class=\" table-bordered table-striped table-responsive\"  cellspacing=0 cellpadding=10 align=\"center\" bgcolor=\"aqua\")>";
+					tab+='<tr align="center" valign="middle">';
+					for(var j=0;j<cols;j++){
+						tab+="<td><b>"+mycars[j]+"<b></td>"
+					}
+					tab+='</tr>'; 
+					var dispose = data.main;
+					var i = dispose.charAt(4);
+					var j = dispose.charAt(5);
+					if(j == ""){
+						i = i;
+					}else{
+						i = i+j;
+					}
+					tab+='<tr align="center" valign="middle">';
+					tab+='<td id="id_setp'+ String(i) +'">运行中</td>';
+					tab+="<td>"+String(i)+"</td>";
+					tab+="<td>"+data.data['mode']+"</td>";
+					tab+="<td>"+data.data['ttl']+"</td>";
+					tab+="<td>"+data.data['liuliang']+"</td>";
+					tab+="<td>"+data.data['wendu']+"</td>";
+					tab+="<td>"+data.data['jiaregonglv']+"</td>";
+					circulation = data.data['xunhuan'];
+					if (circulation == ""){
+						tab+="<td>" + '-' + "</td>";
+					}else{
+						tab+="<td>" + circulation + "</td>";
+					}
+					comparison_other1 = data.data['tiaojian'][0];
+					symbol1 = data.data['tiaojian'][1];
+					condition1 = data.data['tiaojian'][2];
+					if((comparison_other1 == "")||(symbol1 == "")||(condition1 == 0)){
+						tab+="<td>" + '-' + "</td>";
+					}else{
+						tab+="<td>" + comparison_other1 + ' ' + symbol1 + ' ' + condition1 + "</td>";
+					}
+					relationship = data.data['tiaojian'][3];
+					if (relationship == ""){
+						tab+="<td>" + '-' + "</td>";
+					}else {
+						tab+="<td>" + relationship + "</td>";
+					}
+					comparison_other2 = data.data['tiaojian'][4];
+					symbol2 = data.data['tiaojian'][5];
+					condition2 = data.data['tiaojian'][6];
+					if((comparison_other2 == "")||(symbol2 == "")||(condition2 == 0)){
+						tab+="<td>" + '-' + "</td>";
+					}else{
+						tab+="<td>" + comparison_other2 + ' ' + symbol2 + ' ' + condition2 + "</td>";
+					}
+					tab+="<td>"+data.data['true']+"</td>";
+					tab+="<td>"+data.data['false']+"</td>";
+					tab+="<td>"+data.data['loop']+"</td>";
+					tab+="<td>"+data.data['active']+"</td>";
+					let time = 0;
+                    if (data.data['duration'] < 60.0) {
+                        time = "< 1min"
+                    } else {
+                        time = Math.round(data.data['duration']/60.0, 0).toString() + ' min'
+                    }
+                    tab+="<td>"+time+"</td>";
+                    //tab+= '<td><button type="button" class="btn btn-xs btn-info" onClick="javascript:restart_steps('+ String(i) +')"><span class="link glyphicon glyphicon-refresh"></span></button></td>';
+					tab+='</tr>'; 
+					tab+='</table>';
+					div1.innerHTML=tab;
+					var tab2 = "";
+					step_check_fail_reason.innerHTML=tab2;				//清除读取全部工步失败的打印信息
+				}else{
+					//当前没有工步在运行
+					var tab4="<h3><button type=\"button\" style=\"height:30px;width:30px;\" class=\"btn btn-xs btn-success\" onClick=\"javascript:start_steps()\"><span class=\"link glyphicon glyphicon-play\"></span></button>";
+					tab4+="<button type=\"button\" style=\"height:30px;width:30px;\" class=\"btn btn-xs btn-primary\" onClick=\"javascript:check_all_steps()\"><span class=\"link glyphicon glyphicon-search\"></span></button>";
+					tab4+="<button type=\"button\" style=\"height:30px;width:30px;\" class=\"btn btn-xs btn-success.focus\" onClick=\"javascript:skip_page()\"><span class=\"link glyphicon glyphicon-edit\"></span></button><h3>";
+					button_hurdle.innerHTML=tab4;				//动态显示按钮栏
+					var tab3="<table border=1 width=100% height=40 class=\"table-bordered table-striped table-responsive\")>";
+					tab3+="<tr>";
+					tab3+="<td style=\"color:red\"><font size=\"4\"><b>&nbsp&nbsp已停止或未执行！！！<b></font></tb>";
+					tab3+="</tr>";
+					tab3+="</table>";
+					div1.innerHTML=tab3;				//动态打印读取全部工步失败的错误信息	
+				}
+			});	
+        }
+		//开始函数(已改完)
+        function start_steps() {
+			$.getJSON("/v1.0/json/step/check/", '', function(data, status, xhr){
+				//var data = simulation2();
+				if ( data.status === "ok" ) {
+					//检查工步成功，就启动工步
+					$.getJSON("/v1.0/json/step/start/?tsp=timestamp", '', function(data, status, xhr){
+						//var data = simulation3();
+						if ( data.status === "ok" ) {
+							//启动工步成功
+							var tab1="";
+							step_check_fail_reason.innerHTML=tab1;				//清除启动工步失败的打印信息
+						}else{
+							//启动工步失败
+							var tab2="<table border=1 width=100% height=40 class=\"table-bordered table-striped table-responsive\")>";
+							tab2+="<tr>";
+							tab2+="<td style=\"color:red\"><font size=\"4\"><b>&nbsp&nbsp启动工步失败，失败原因="+ data.reason  +"！！！<b></font></tb>";
+							tab2+="</tr>";
+							tab2+="</table>";
+							step_check_fail_reason.innerHTML=tab2;				//动态打印启动工步失败的错误信息
+						}
+					});
+				}else{
+					//检查工步失败
+					var tab4="<table border=1 width=100% height=40 class=\"table-bordered table-striped table-responsive\")>";
+					tab4+="<tr>";
+					tab4+="<td style=\"color:red\"><font size=\"4\"><b>&nbsp&nbsp检查工步失败，失败原因="+ data.reason  +"！！！<b></font></tb>";
+					tab4+="</tr>";
+					tab4+="</table>";
+					step_check_fail_reason.innerHTML=tab4;				//动态打印检查工步失败的错误信息
+				}
+			});
+        }
+		//暂停函数(已改完)
+        function pause_steps() {
+			$.getJSON("/v1.0/json/step/pause/", '', function(data, status, xhr){
+				//var data = simulation4();
+				if ( data.status === "ok" ) {
+					//暂停工步成功
+					var tab1="<table border=1 width=100% height=40 class=\"table-bordered table-striped table-responsive\")>";
+					tab1+="<tr>";
+					tab1+="<td style=\"color:#00BB00\"><font size=\"3\"><b>&nbsp&nbsp工 步 暂 停 成 功<b></font></tb>";
+					tab1+="</tr>";
+					tab1+="</table>";
+				    step_check_fail_reason.innerHTML=tab1;     			//动态打印暂停工步成功的信息
+				}else{
+					//暂停工步失败
+					var tab2="<table border=1 width=100% height=40 class=\"table-bordered table-striped table-responsive\")>";
+					tab2+="<tr>";
+					tab2+="<td style=\"color:red\"><font size=\"4\"><b>&nbsp&nbsp暂停工步失败，失败原因="+ data.reason  +"！！！<b></font></tb>";
+					tab2+="</tr>";
+					tab2+="</table>";
+					step_check_fail_reason.innerHTML=tab2;				//动态打印暂停工步失败的错误信息
+				}
+			});
+        }
+		//停止函数(已改完)
+        function stop_steps() {
+			$.getJSON("/v1.0/json/step/stop/", '', function(data, status, xhr){
+				//var data = simulation5();
+				if ( data.status === "ok" ) {
+					//停止工步成功
+					var tab1="<table border=1 width=100% height=40 class=\"table-bordered table-striped table-responsive\")>";
+					tab1+="<tr>";
+					tab1+="<td style=\"color:#00BB00\"><font size=\"3\"><b>&nbsp&nbsp工 步 停 止 成 功<b></font></tb>";
+					tab1+="</tr>";
+					tab1+="</table>";
+				    step_check_fail_reason.innerHTML=tab1;     			//动态打印停止工步成功的信息
+				}else{
+					//停止工步失败
+					var tab2="<table border=1 width=100% height=40 class=\"table-bordered table-striped table-responsive\")>";
+					tab2+="<tr>";
+					tab2+="<td style=\"color:red\"><font size=\"4\"><b>&nbsp&nbsp停止工步失败，失败原因="+ data.reason  +"！！！<b></font></tb>";
+					tab2+="</tr>";
+					tab2+="</table>";
+					step_check_fail_reason.innerHTML=tab2;				//动态打印停止工步失败的错误信息
+				}
+			});
+        }
+		//检查函数(已改完)
+		function check_all_steps() {
+			$.getJSON("/v1.0/json/step/check/", '', function(data, status, xhr){
+				//var data = simulation6();
+				if ( data.status === "ok" ) {
+					//检查工步成功
+					var tab1="<table border=1 width=100% height=40 class=\"table-bordered table-striped table-responsive\")>";
+					tab1+="<tr>";
+					tab1+="<td style=\"color:#00BB00\"><font size=\"3\"><b>&nbsp&nbsp工 步 文 件 无 误<b></font></tb>";
+					tab1+="</tr>";
+					tab1+="</table>";
+					step_check_fail_reason.innerHTML=tab1;				//动态打印检查工步成功的信息
+				}else{
+					//检查工步失败
+					var tab2="<table border=1 width=100% height=40 class=\"table-bordered table-striped table-responsive\")>";
+					tab2+="<tr>";
+					tab2+="<td style=\"color:red\"><font size=\"4\"><b>&nbsp&nbsp检查工步失败，失败原因="+ data.reason  +"！！！<b></font></tb>";
+					tab2+="</tr>";
+					tab2+="</table>";
+					step_check_fail_reason.innerHTML=tab2;				//动态打印检查工步失败的错误信息
+				}
+			});
+        }
+		//重启函数
+		function restart_steps(step) {
+            newline.steps_reboot('step' + String(step),function (data) {
+                console.log('steps_reboot success return:', data);
+                $("tr").removeClass("danger");
+				var tab1="<table border=1 width=100% height=40 class=\"table-bordered table-striped table-responsive\")>";
+				tab1+="<tr>";
+				tab1+="<td style=\"color:#00BB00\"><font size=\"3\"><b>&nbsp&nbsp工 步 " + String(step) + " 重 启 成 功<b></font></tb>";
+				tab1+="</tr>";
+				tab1+="</table>";
+               step_check_fail_reason.innerHTML=tab1;   	//动态打印工步重启成功
+            }, function (response) {
+                var name = response.data;
+                $("." + name).addClass("danger");
+				var tab2="<table border=1 width=100% height=40 class=\"table-bordered table-striped table-responsive\")>";
+				tab2+="<tr>";
+				tab2+="<td style=\"color:red\"><font size=\"4\"><b>&nbsp&nbsp" + String(response.reason) + "!<b></font></tb>";
+				tab2+="</tr>";
+				tab2+="</table>";
+                step_check_fail_reason.innerHTML=tab2;		//动态打印工步重启失败原因
+                console.log('steps_reboot return fail, response=', response)
+            });
+        }
+		//跳转编辑页面(已改完)
+		function skip_page() {
+			$.getJSON("/v1.0/json/step/operation/get/", '', function(data, status, xhr){
+				if ( data.status === "ok" ) {
+					//当前有工步在运行
+					var tab2="<table border=1 width=100% height=40 class=\"table-bordered table-striped table-responsive\")>";
+					tab2+="<tr>";
+					tab2+="<td style=\"color:red\"><font size=\"4\"><b>&nbsp&nbsp当前有工步在运行，请先停止运行工步再编辑！！！<b></font></tb>";
+					tab2+="</tr>";
+					tab2+="</table>";
+					step_check_fail_reason.innerHTML=tab2;				//动态打印启动工步失败的错误信息
+				}else{
+					//当前没有工步在运行
+					window.parent.location.href = window.location + 'edit/';
+				}
+			});	 
+        }
+
+        $(document).ready(function () {
+            dynamic_list();
+        });
+		
+	</script>
+{% endblock %}
+
+
+{% block page-navbar %}
+    {% include "01-天硕/06-base-控制面板-选择.html" %}
+    <div class="row">
+        <div style="width: 40%" class="col-xs-1">
+            <h3>工步列表展示界面</h3>
+        </div>
+        <div class="col-xs-1"  id="button_hurdle" style="width: 60%; text-align:right;"></div>
+    </div>
+{% endblock %}
+
+
+{% block page-body %}
+    <div class="row" id="div1"></div>
+
+    <div class="row"><p></p></div>
+
+    <div class="row" id="step_check_fail_reason"></div>
+
+    <!--<div>
+        <table border=1 width=100% height=80 class="table-bordered table-striped table-responsive" )>
+            <tr>
+                <td style="color:red"><font size="3"><b>&nbsp&nbsp! ! 反 馈 操 作 信 息 ! !<b></font></tb>
+            </tr>
+            <tr>
+                <td style="color:red"><font size="3"><b>&nbsp&nbsp! ! 操 作 信 息 ! !<b></font></tb>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <table border=1 width=100% height=80 class="table-bordered table-striped table-responsive" )>
+            <tr>
+                <td style="color:#00EC00"><font size="3"><b>&nbsp&nbsp! ! 反 馈 操 作 信 息 ! !<b></font></tb>
+            </tr>
+            <tr>
+                <td style="color:#00EC00"><font size="3"><b>&nbsp&nbsp! ! 操 作 信 息 ! !<b></font></tb>
+            </tr>
+        </table>
+    </div>-->
+{% endblock %}

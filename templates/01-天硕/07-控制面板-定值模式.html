@@ -1,0 +1,129 @@
+{% extends "theme/base.html" %}
+
+{% block page-title %}设备遥调{% endblock %}
+
+{% block include-js %}
+    <script src="/static/js/jquery.js"></script>
+    <script src="/static/js/bootstrap.js"></script>
+{% endblock %}
+
+
+{% block include-css %}
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css">
+{% endblock %}
+
+
+{% block inline-css %}
+    <style>
+    body {
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+    }
+    </style>
+{% endblock %}
+
+
+{% block inline-js %}
+    <script>
+        $(document).ready(function () {
+            $("#start").click(function () {
+                $("#start_form").submit();
+            });
+
+            $("#stop").click(function () {
+                $("#stop_form").submit();
+            });
+
+            $("#outer_loop").click(function () {
+                $("#outer_loop_form").submit();
+            });
+
+            $("#inner_loop").click(function () {
+                $("#inner_loop_form").submit();
+            });
+        });
+    </script>
+{% endblock %}
+
+
+{% block page-navbar %}
+    {% include "01-天硕/06-base-控制面板-选择.html" %}
+    <br>
+
+    <form method="post" class="form">
+        <div class="row">
+            <div class="col-xs-6">
+                <div class="input-group">
+                    <span class="input-group-addon">远程定值温度设定</span>
+                    <input type="number" required class="form-control text-center" placeholder="{{ control.远程定值温度设定 }}" id="远程定值温度设定" name="远程定值温度设定">
+                    <span class="input-group-addon">℃</span>
+                </div>
+            </div>
+
+            <div class="col-xs-4">
+                <div class="input-group">
+                    <span class="input-group-addon">远程流量设定</span>
+                    <input type="number" required class="form-control text-center" placeholder="{{ control.远程流量设定 }}" id="远程流量设定" name="远程流量设定">
+                    <span class="input-group-addon">L/min</span>
+                </div>
+            </div>
+            <div class="col-xs-2">
+                <input type="number" hidden value="100" name="远程强制控制加热器">
+                <input type="number" hidden value="0" name="远程运行程序号">
+                <input type="submit" value="设置" class="btn btn-block btn-primary">
+            </div>
+        </div>
+    </form>
+
+    <br>
+
+    <div class="row">
+        <div class="col-xs-6">
+            <div class="btn-group" role="group" aria-label="...">
+                <a class="btn btn-default disabled">远程内外循环切换</a>
+                <a class="btn{% if control.远程内外循环切换 == 1 %} btn-primary{% else %} btn-default{% endif %}" id="outer_loop">外循环</a>
+                <a class="btn{% if control.远程内外循环切换 == 0 %} btn-primary{% else %} btn-default{% endif %}" id="inner_loop">内循环</a>
+            </div>
+        </div>
+
+        <div class="col-xs-6 text-right">
+            <div class="btn-group" role="group" aria-label="...">
+                <a class="btn btn-default disabled">
+                    远程控制
+                </a>
+                <a class="btn{% if control.远程启动 %} btn-primary{% else %} btn-default{% endif %}" id="start">
+                    <span class="glyphicon glyphicon-play text-success"></span>
+                    启动
+                </a>
+                <a class="btn{% if control.远程停止 %} btn-primary{% else %} btn-default{% endif %}" id="stop">
+                    <span class="glyphicon glyphicon-stop text-danger"></span>
+                    停止
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <form method="post" class="form" id="start_form" hidden>
+        <input name="远程启动" value="1">
+        <input name="control" value="1">
+    </form>
+    <form method="post" class="form" id="stop_form" hidden>
+        <input name="远程停止" value="1">
+        <input name="control" value="1">
+    </form>
+
+    <form method="post" class="form" id="outer_loop_form" hidden>
+        <input name="远程内外循环切换" value="1">
+        <input name="control" value="1">
+    </form>
+    <form method="post" class="form" id="inner_loop_form" hidden>
+        <input name="远程内外循环切换" value="0">
+        <input name="control" value="1">
+    </form>
+{% endblock %}
+
+
+{% block page-body %}
+    <div id="tmp" hidden></div>
+{% endblock %}

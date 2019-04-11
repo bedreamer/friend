@@ -1,0 +1,121 @@
+{% extends "theme/base.html" %}
+
+{% block page-title %}设备遥控{% endblock %}
+
+{% block include-js %}
+    <script src="/static/js/jquery.js"></script>
+    <script src="/static/js/bootstrap.js"></script>
+{% endblock %}
+
+
+{% block include-css %}
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css">
+{% endblock %}
+
+
+{% block inline-css %}
+{% endblock %}
+
+
+{% block inline-js %}
+    <script>
+        $(document).ready(function () {
+            $("#start").click(function () {
+                $("#start_form").submit();
+            });
+
+            $("#stop").click(function () {
+                $("#stop_form").submit();
+            });
+
+            $("#outer_loop").click(function () {
+                $("#outer_loop_form").submit();
+            });
+
+            $("#inner_loop").click(function () {
+                $("#inner_loop_form").submit();
+            });
+
+            $("#start_1").click(function () {
+                $("#start_1_form").submit();
+            });
+
+            $("#stop_1").click(function () {
+                $("#stop_1_form").submit();
+            });
+        });
+    </script>
+{% endblock %}
+
+
+{% block page-navbar %}
+    <h3>设备运行控制</h3>
+    <br>
+
+    <div class="btn-group" role="group" aria-label="...">
+        <a class="btn btn-default disabled" id="start">
+            远程控制
+        </a>
+        <a class="btn{% if yaokong.远程启动 %} btn-primary{% else %} btn-default{% endif %}" id="start">
+            <span class="glyphicon glyphicon-play text-success"></span>
+            启动
+        </a>
+        <a class="btn{% if yaokong.远程停止 %} btn-primary{% else %} btn-default{% endif %}" id="stop">
+            <span class="glyphicon glyphicon-stop text-danger"></span>
+            停止
+        </a>
+    </div>
+
+    <span>&nbsp;</span>
+    <span>&nbsp;</span>
+
+    <form method="post" class="form" id="start_form" hidden>
+        <input name="远程启动" value="1">
+    </form>
+
+    <form method="post" class="form" id="stop_form" hidden>
+        <input name="远程停止" value="1">
+    </form>
+
+    <div class="btn-group" role="group" aria-label="...">
+        <a class="btn{% if yaokong.远程内外循环切换 == 1 %} btn-primary{% else %} btn-default{% endif %}" id="outer_loop">外循环</a>
+        <a class="btn{% if yaokong.远程内外循环切换 == 0 %} btn-primary{% else %} btn-default{% endif %}" id="inner_loop">内循环</a>
+    </div>
+
+    <span>&nbsp;</span>
+    <span>&nbsp;</span>
+
+    <form method="post" class="form" id="outer_loop_form" hidden>
+        <input name="远程内外循环切换" value="1">
+    </form>
+
+    <form method="post" class="form" id="inner_loop_form" hidden>
+        <input name="远程内外循环切换" value="0">
+    </form>
+
+
+    <div class="btn-group" role="group" aria-label="...">
+        <a class="btn btn-default disabled">远程排汽加液</a>
+        <a class="btn{% if yaokong.远程排汽加液_启动循环泵 == 1 %} btn-primary{% else %} btn-default{% endif %}" id="start_1">
+            <span class="glyphicon glyphicon-play text-success"></span>
+            启动
+        </a>
+        <a class="btn{% if yaokong.远程排汽加液_启动循环泵 == 0%} btn-primary{% else %} btn-default{% endif %}" id="stop_1">
+            <span class="glyphicon glyphicon-stop text-danger"></span>
+            停止
+        </a>
+    </div>
+
+    <form method="post" class="form" id="start_1_form" hidden>
+        <input name="远程排汽加液_启动循环泵" value="1">
+    </form>
+
+    <form method="post" class="form" id="stop_1_form" hidden>
+        <input name="远程排汽加液_启动循环泵" value="0">
+    </form>
+{% endblock %}
+
+
+{% block page-body %}
+    <div id="tmp" hidden></div>
+{% endblock %}

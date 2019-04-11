@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>工步列表展示界面</title>
+    {% include "base-head.html" %}
+	<script src="/static/js/wsapi.js"></script>
+	<script src="/static/js/newline.js"></script>
+	<script>
+		//var api = WsApi('/newline/step/', 'onlwe.com:8888');
+        //var newline = NewLine(api);
+        //网页刷新触发
+        $(document).ready(function () {
+            //api.ready(function () {
+               //dynamic_list()
+            //});
+        });
+		//模拟函数1
+		function simulation1(){
+			var data = {
+				"status": "ok",
+				"reason": "",				//失败原因
+				"main": "step1",
+				"steps": {
+					"step1": {
+						"mode": "自动模式",
+						"liuliang": 10,
+						"wendu": 10,
+						"jiaregonglv": 20,
+						"xunhuan": "内循环",
+						"ttl": 30,
+						"tiaojian": [
+						"T进水口",
+						"=",
+						"25",
+						"and",
+						"最高温度",
+						"<",
+						"55"
+						],
+						"true": "$auto",
+						"false": "$auto"
+					},
+					"step10": {
+						"mode": "加热模式",
+						"liuliang": 50,
+						"wendu": 50,
+						"jiaregonglv": 50,
+						"xunhuan": "外循环",
+						"ttl": 50,
+						"tiaojian": [
+						"T出水口",
+						"=",
+						"15",
+						"and",
+						"最低温度",
+						">",
+						"25"
+						],
+						"true": "$auto",
+						"false": "$auto"
+					},
+					"step2": {
+						"mode": "加热模式",
+						"liuliang": 20,
+						"wendu": 20,
+						"jiaregonglv": 30,
+						"xunhuan": "外循环",
+						"ttl": 20,
+						"tiaojian": [
+						"T出水口",
+						"=",
+						"15",
+						"and",
+						"最低温度",
+						">",
+						"25"
+						],
+						"true": "$auto",
+						"false": "$auto"
+					},
+					"step5": {
+						"mode": "加热模式",
+						"liuliang": 50,
+						"wendu": 50,
+						"jiaregonglv": 50,
+						"xunhuan": "外循环",
+						"ttl": 50,
+						"tiaojian": [
+						"T出水口",
+						"=",
+						"15",
+						"and",
+						"最低温度",
+						">",
+						"25"
+						],
+						"true": "$auto",
+						"false": "$auto"
+					},
+				}
+			}
+			return data;
+		}	
+		//动态生成表(已改完)
+		function dynamic_list(){
+			var mycars = new Array()
+			var rows = 0;
+			var tab;
+			var tab1 = "";
+			mycars[ 0] = "执行状态"
+			mycars[ 1] = "工步编号"
+			mycars[ 2] = "工步名称"
+			mycars[ 3] = "运行时间(秒)"
+			mycars[ 4] = "流量设定(L/min)"
+			mycars[ 5] = "温度设定(℃)"
+			mycars[ 6] = "加热百分比(%)"
+			mycars[ 7] = "循环模式"
+			mycars[ 8] = "跳转条件1"
+			mycars[ 9] = "逻辑关系"
+			mycars[10] = "跳转条件2"
+			mycars[11] = "匹配"
+			mycars[12] = "不匹配"
+			//mycars[13] = "工步操作"
+			var return_data = "";
+			$.getJSON("/v1.0/json/step/steps/get/?tsp=timestamp", '', function(data, status, xhr){
+				//var data = simulation1();
+				if ( data.status === "ok" ) {
+					//查询全部工步数据成功
+					cols=13;
+					//cols=14;
+					div1=document.getElementById('div1');
+					for ( step in data.steps ) {  
+						rows = rows + 1;
+					}
+					heights = 40*(rows+1);
+					height = String(heights);
+					tab="<table border=1 width=100% height=" + height + " class=\" table-bordered table-striped table-responsive\"  cellspacing=0 cellpadding=10 align=\"center\" bgcolor=\"aqua\")>";
+					tab+='<tr align="center" valign="middle">';
+					for(var j=0;j<cols;j++){
+						tab+="<td><b>"+mycars[j]+"<b></td>"
+					}
+					tab+='</tr>'; 
+					for ( step in data.steps ) {
+						var dispose = step;
+						var i = dispose.charAt(4);
+						var j = dispose.charAt(5);
+						if(j == ""){
+							i = i;
+						}else{
+							i = i+j;
+						}
+						var date = parseFloat(i);
+						if((date > 0)&&(date < 10)){
+							tab+='<tr align="center" valign="middle">';
+							tab+='<td id="id_setp'+ String(i) +'">-</td>';
+							tab+="<td>"+String(i)+"</td>";
+							tab+="<td>"+data['steps']['step'+ String(i)]['mode']+"</td>";
+							tab+="<td>"+data['steps']['step'+ String(i)]['ttl']+"</td>";
+							tab+="<td>"+data['steps']['step'+ String(i)]['liuliang']+"</td>";
+							tab+="<td>"+data['steps']['step'+ String(i)]['wendu']+"</td>";
+							tab+="<td>"+data['steps']['step'+ String(i)]['jiaregonglv']+"</td>";
+							circulation = data['steps']['step'+ String(i)]['xunhuan'];
+							if (circulation == ""){
+								tab+="<td>" + '-' + "</td>";
+							}else{
+								tab+="<td>" + circulation + "</td>";
+							}
+							comparison_other1 = data['steps']['step'+ String(i)]['tiaojian'][0];
+							symbol1 = data['steps']['step'+ String(i)]['tiaojian'][1];
+							condition1 = data['steps']['step'+ String(i)]['tiaojian'][2];
+							if((comparison_other1 == "")||(symbol1 == "")||(condition1 == 0)){
+								tab+="<td>" + '-' + "</td>";
+							}else{
+								tab+="<td>" + comparison_other1 + ' ' + symbol1 + ' ' + condition1 + "</td>";
+							}
+							relationship = data['steps']['step'+ String(i)]['tiaojian'][3];
+							if (relationship == ""){
+								tab+="<td>" + '-' + "</td>";
+							}else {
+								tab+="<td>" + relationship + "</td>";
+							}
+							comparison_other2 = data['steps']['step'+ String(i)]['tiaojian'][4];
+							symbol2 = data['steps']['step'+ String(i)]['tiaojian'][5];
+							condition2 = data['steps']['step'+ String(i)]['tiaojian'][6];
+							if((comparison_other2 == "")||(symbol2 == "")||(condition2 == 0)){
+								tab+="<td>" + '-' + "</td>";
+							}else{
+								tab+="<td>" + comparison_other2 + ' ' + symbol2 + ' ' + condition2 + "</td>";
+							}
+							tab+="<td>"+data['steps']['step'+ String(i)]['true']+"</td>";
+							tab+="<td>"+data['steps']['step'+ String(i)]['false']+"</td>";
+							//tab+= '<td><button type="button" class="btn btn-xs btn-info" onClick="javascript:restart_steps('+ String(i) +')"><span class="link glyphicon glyphicon-refresh"></span></button></td>';
+							tab+='</tr>'; 
+						}else if((date >= 10)&&(date < 20)){
+							tab1+='<tr align="center" valign="middle">';
+							tab1+='<td id="id_setp'+ String(i) +'">-</td>';
+							tab1+="<td>"+String(i)+"</td>";
+							tab1+="<td>"+data['steps']['step'+ String(i)]['mode']+"</td>";
+							tab1+="<td>"+data['steps']['step'+ String(i)]['ttl']+"</td>";
+							tab1+="<td>"+data['steps']['step'+ String(i)]['liuliang']+"</td>";
+							tab1+="<td>"+data['steps']['step'+ String(i)]['wendu']+"</td>";
+							tab1+="<td>"+data['steps']['step'+ String(i)]['jiaregonglv']+"</td>";
+							circulation = data['steps']['step'+ String(i)]['xunhuan'];
+							if (circulation == ""){
+								tab1+="<td>" + '-' + "</td>";
+							}else{
+								tab1+="<td>" + circulation + "</td>";
+							}
+							comparison_other1 = data['steps']['step'+ String(i)]['tiaojian'][0];
+							symbol1 = data['steps']['step'+ String(i)]['tiaojian'][1];
+							condition1 = data['steps']['step'+ String(i)]['tiaojian'][2];
+							if((comparison_other1 == "")||(symbol1 == "")||(condition1 == 0)){
+								tab1+="<td>" + '-' + "</td>";
+							}else{
+								tab1+="<td>" + comparison_other1 + ' ' + symbol1 + ' ' + condition1 + "</td>";
+							}
+							relationship = data['steps']['step'+ String(i)]['tiaojian'][3];
+							if (relationship == ""){
+								tab1+="<td>" + '-' + "</td>";
+							}else {
+								tab1+="<td>" + relationship + "</td>";
+							}
+							comparison_other2 = data['steps']['step'+ String(i)]['tiaojian'][4];
+							symbol2 = data['steps']['step'+ String(i)]['tiaojian'][5];
+							condition2 = data['steps']['step'+ String(i)]['tiaojian'][6];
+							if((comparison_other2 == "")||(symbol2 == "")||(condition2 == 0)){
+								tab1+="<td>" + '-' + "</td>";
+							}else{
+								tab1+="<td>" + comparison_other2 + ' ' + symbol2 + ' ' + condition2 + "</td>";
+							}
+							tab1+="<td>"+data['steps']['step'+ String(i)]['true']+"</td>";
+							tab1+="<td>"+data['steps']['step'+ String(i)]['false']+"</td>";
+							//tab1+= '<td><button type="button" class="btn btn-xs btn-info" onClick="javascript:restart_steps('+ String(i) +')"><span class="link glyphicon glyphicon-refresh"></span></button></td>';
+							tab1+='</tr>'; 
+						}	
+					}
+					tab = tab + tab1;
+					tab+='</table>';
+					div1.innerHTML=tab;
+					var tab2 = "";
+					step_check_fail_reason.innerHTML=tab2;				//清除读取全部工步失败的打印信息
+				}else{
+					//查询全部工步数据失败
+					var tab3="<table border=1 width=100% height=40 class=\"table-bordered table-striped table-responsive\")>";
+					tab3+="<tr>";
+					tab3+="<td style=\"color:red\"><font size=\"4\"><b>&nbsp&nbsp查询全部工步数据失败，失败原因="+ data.reason  +"！！！<b></font></tb>";
+					tab3+="</tr>";
+					tab3+="</table>";
+					step_check_fail_reason.innerHTML=tab3;				//动态打印读取全部工步失败的错误信息
+				}
+			});	
+        }
+		//模拟函数2
+		function simulation2(){
+			var data = {
+				"status": "ok",			//状态  error
+				"reason": "工步1判断条件有问题！",			//失败原因
+			}
+			return data;
+		}	
+		//模拟函数3
+		function simulation3(){
+			var data = {
+				"status": "error",			//状态  error
+				"reason": "由于工步1判断条件有问题，无法启动工步！",			//失败原因
+			}
+			return data;
+		}
+		//开始函数(已改完)
+        function start_steps() {
+			$.getJSON("/v1.0/json/step/check/?tsp=timestamp", '', function(data, status, xhr){
+				//var data = simulation2();
+				if ( data.status === "ok" ) {
+					//检查工步成功，就启动工步
+					$.getJSON("/v1.0/json/step/start/?tsp=timestamp", '', function(data, status, xhr){
+						//var data = simulation3();
+						if ( data.status === "ok" ) {
+							//启动工步成功
+							var tab1="";
+							step_check_fail_reason.innerHTML=tab1;				//清除启动工步失败的打印信息
+						}else{
+							//启动工步失败
+							var tab2="<table border=1 width=100% height=40 class=\"table-bordered table-striped table-responsive\")>";
+							tab2+="<tr>";
+							tab2+="<td style=\"color:red\"><font size=\"4\"><b>&nbsp&nbsp启动工步失败，失败原因="+ data.reason  +"！！！<b></font></tb>";
+							tab2+="</tr>";
+							tab2+="</table>";
+							step_check_fail_reason.innerHTML=tab2;				//动态打印启动工步失败的错误信息
+						}
+					});
+				}else{
+					//检查工步失败
+					var tab4="<table border=1 width=100% height=40 class=\"table-bordered table-striped table-responsive\")>";
+					tab4+="<tr>";
+					tab4+="<td style=\"color:red\"><font size=\"4\"><b>&nbsp&nbsp检查工步失败，失败原因="+ data.reason  +"！！！<b></font></tb>";
+					tab4+="</tr>";
+					tab4+="</table>";
+					step_check_fail_reason.innerHTML=tab4;				//动态打印检查工步失败的错误信息
+				}
+			});
+        }
+		//模拟函数4
+		function simulation4(){
+			var data = {
+				"status": "error",			//状态  error
+				"reason": "由于连接错误，无法暂停工步！",			//失败原因
+			}
+			return data;
+		}
+		//暂停函数(已改完)
+        function pause_steps() {
+			$.getJSON("/v1.0/json/step/pause/?tsp=timestamp", '', function(data, status, xhr){
+				//var data = simulation4();
+				if ( data.status === "ok" ) {
+					//暂停工步成功
+					var tab1="<table border=1 width=100% height=40 class=\"table-bordered table-striped table-responsive\")>";
+					tab1+="<tr>";
+					tab1+="<td style=\"color:#00BB00\"><font size=\"3\"><b>&nbsp&nbsp工 步 暂 停 成 功<b></font></tb>";
+					tab1+="</tr>";
+					tab1+="</table>";
+				    step_check_fail_reason.innerHTML=tab1;     			//动态打印暂停工步成功的信息
+				}else{
+					//暂停工步失败
+					var tab2="<table border=1 width=100% height=40 class=\"table-bordered table-striped table-responsive\")>";
+					tab2+="<tr>";
+					tab2+="<td style=\"color:red\"><font size=\"4\"><b>&nbsp&nbsp暂停工步失败，失败原因="+ data.reason  +"！！！<b></font></tb>";
+					tab2+="</tr>";
+					tab2+="</table>";
+					step_check_fail_reason.innerHTML=tab2;				//动态打印暂停工步失败的错误信息
+				}
+			});
+        }
+		//模拟函数5
+		function simulation5(){
+			var data = {
+				"status": "error",			//状态  error
+				"reason": "由于连接错误，无法停止工步！",			//失败原因
+			}
+			return data;
+		}
+		//停止函数(已改完)
+        function stop_steps() {
+			$.getJSON("/v1.0/json/step/stop/?tsp=timestamp", '', function(data, status, xhr){
+				//var data = simulation5();
+				if ( data.status === "ok" ) {
+					//停止工步成功
+					var tab1="<table border=1 width=100% height=40 class=\"table-bordered table-striped table-responsive\")>";
+					tab1+="<tr>";
+					tab1+="<td style=\"color:#00BB00\"><font size=\"3\"><b>&nbsp&nbsp工 步 停 止 成 功<b></font></tb>";
+					tab1+="</tr>";
+					tab1+="</table>";
+				    step_check_fail_reason.innerHTML=tab1;     			//动态打印停止工步成功的信息
+				}else{
+					//停止工步失败
+					var tab2="<table border=1 width=100% height=40 class=\"table-bordered table-striped table-responsive\")>";
+					tab2+="<tr>";
+					tab2+="<td style=\"color:red\"><font size=\"4\"><b>&nbsp&nbsp停止工步失败，失败原因="+ data.reason  +"！！！<b></font></tb>";
+					tab2+="</tr>";
+					tab2+="</table>";
+					step_check_fail_reason.innerHTML=tab2;				//动态打印停止工步失败的错误信息
+				}
+			});
+        }
+		//模拟函数6
+		function simulation6(){
+			var data = {
+				"status": "error",			//状态  error
+				"reason": "由于连接错误，检查工步失败！",			//失败原因
+			}
+			return data;
+		}
+		//检查函数(已改完)
+		function check_all_steps() {
+			$.getJSON("/v1.0/json/step/check/?tsp=timestamp", '', function(data, status, xhr){
+				//var data = simulation6();
+				if ( data.status === "ok" ) {
+					//检查工步成功
+					var tab1="<table border=1 width=100% height=40 class=\"table-bordered table-striped table-responsive\")>";
+					tab1+="<tr>";
+					tab1+="<td style=\"color:#00BB00\"><font size=\"3\"><b>&nbsp&nbsp工 步 文 件 无 误<b></font></tb>";
+					tab1+="</tr>";
+					tab1+="</table>";
+					step_check_fail_reason.innerHTML=tab1;				//动态打印检查工步成功的信息
+				}else{
+					//检查工步失败
+					var tab2="<table border=1 width=100% height=40 class=\"table-bordered table-striped table-responsive\")>";
+					tab2+="<tr>";
+					tab2+="<td style=\"color:red\"><font size=\"4\"><b>&nbsp&nbsp检查工步失败，失败原因="+ data.reason  +"！！！<b></font></tb>";
+					tab2+="</tr>";
+					tab2+="</table>";
+					step_check_fail_reason.innerHTML=tab2;				//动态打印检查工步失败的错误信息
+				}
+			});
+        }
+		//重启函数
+		function restart_steps(step) {
+            newline.steps_reboot('step' + String(step),function (data) {
+                console.log('steps_reboot success return:', data);
+                $("tr").removeClass("danger");
+				var tab1="<table border=1 width=100% height=40 class=\"table-bordered table-striped table-responsive\")>";
+				tab1+="<tr>";
+				tab1+="<td style=\"color:#00BB00\"><font size=\"3\"><b>&nbsp&nbsp工 步 " + String(step) + " 重 启 成 功<b></font></tb>";
+				tab1+="</tr>";
+				tab1+="</table>";
+               step_check_fail_reason.innerHTML=tab1;   	//动态打印工步重启成功
+            }, function (response) {
+                var name = response.data;
+                $("." + name).addClass("danger");
+				var tab2="<table border=1 width=100% height=40 class=\"table-bordered table-striped table-responsive\")>";
+				tab2+="<tr>";
+				tab2+="<td style=\"color:red\"><font size=\"4\"><b>&nbsp&nbsp" + String(response.reason) + "!<b></font></tb>";
+				tab2+="</tr>";
+				tab2+="</table>";
+                step_check_fail_reason.innerHTML=tab2;		//动态打印工步重启失败原因
+                console.log('steps_reboot return fail, response=', response)
+            });
+        }
+		//跳转编辑页面(已改完)
+		function skip_page() {
+           window.location.href = "setp_set.htm"; 
+        }
+		
+	</script>
+</head>
+<body onload="javascript:dynamic_list()">
+    {% include "base-navbar-top.html" %}
+    <div class="container">
+      
+        <div class="row">
+            <div class="text" style=" text-align:center;"><h3><b>当 前 已 编 辑 工 步 列 表</b></h3></div>
+        </div>
+		<div class="row"><p></p></div>
+		<div class="row">
+            <div class="text" style=" text-align:right;">
+				<button type="button" style="height:30px;width:30px;" class="btn btn-xs btn-success" onClick="javascript:start_steps()"><span class="link glyphicon glyphicon-play"></span></button>
+                <!--<a class="btn btn-default btn-xs" onclick="javascript:start_steps()">开始</a>-->
+				<button type="button" style="height:30px;width:30px;" class="btn btn-xs btn-warning" onClick="javascript:pause_steps()"><span class="link glyphicon glyphicon-pause"></span></button>
+                <!--<a class="btn btn-default btn-xs" onclick="javascript:pause_steps()">暂停</a>-->
+				<button type="button" style="height:30px;width:30px;" class="btn btn-xs btn-danger" onClick="javascript:stop_steps()"><span class="link glyphicon glyphicon-stop"></span></button>
+                <!--<a class="btn btn-default btn-xs" onclick="javascript:stop_steps()">停止</a>-->
+				<!--<button type="button" style="height:30px;width:30px;" class="btn btn-xs btn-info" onClick="javascript:restart_steps(1)"><span class="link glyphicon glyphicon-refresh"></span></button>
+					<a class="btn btn-default btn-xs" onclick="javascript:restart_steps()">重启</a>-->
+				<button type="button" style="height:30px;width:30px;" class="btn btn-xs btn-primary" onClick="javascript:check_all_steps()"><span class="link glyphicon glyphicon-zoom-out"></span></button>
+                <!--<a class="btn btn-default btn-xs" onclick="javascript:check_all_steps()">检查</a>-->
+				<button type="button" style="height:30px;width:30px;" class="btn btn-xs btn-success.focus" onClick="javascript:skip_page()"><span class="link glyphicon glyphicon-edit"></span></button>
+                <!--<a class="btn btn-default btn-xs" onclick="javascript:skip_page()">编辑</a>-->
+            </div>
+        </div>
+		
+		<div class="row"><p></p></div>
+		
+		<div class="row" id="div1"></div>
+		
+		<div class="row"><p></p></div>
+		
+		<div class="row" id="step_check_fail_reason"></div>
+	
+		<!--<div>
+			<table border=1 width=100% height=80 class="table-bordered table-striped table-responsive" )>
+				<tr>
+					<td style="color:red"><font size="3"><b>&nbsp&nbsp! ! 反 馈 操 作 信 息 ! !<b></font></tb>
+				</tr>
+				<tr>
+					<td style="color:red"><font size="3"><b>&nbsp&nbsp! ! 操 作 信 息 ! !<b></font></tb>
+				</tr>
+			</table>	
+		</div>
+		<div>
+			<table border=1 width=100% height=80 class="table-bordered table-striped table-responsive" )>
+				<tr>
+					<td style="color:#00EC00"><font size="3"><b>&nbsp&nbsp! ! 反 馈 操 作 信 息 ! !<b></font></tb>
+				</tr>
+				<tr>
+					<td style="color:#00EC00"><font size="3"><b>&nbsp&nbsp! ! 操 作 信 息 ! !<b></font></tb>
+				</tr>
+			</table>	
+		</div>-->
+		
+		<div class="row"><p></p></div>
+		
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="text-danger">说明:</div>
+                <div class="text-danger">$auto跳转目标为自动确认，规则如下:</div>
+                <div class="text-danger">条件列表判断为<strong>真</strong>或运行时长超时自动转<strong>下一条</strong>工步</div>
+                <div class="text-danger">条件列表判断为<strong>假</strong>且运行时长未超时继续执行当前工步</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>		
+
+
+
+
+
+
+
+
+
+
+

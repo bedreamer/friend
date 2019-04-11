@@ -1,0 +1,93 @@
+{% extends "theme/base.html" %}
+
+{% block page-title %}设备遥调{% endblock %}
+
+{% block include-js %}
+    <script src="/static/js/jquery.js"></script>
+    <script src="/static/js/bootstrap.js"></script>
+{% endblock %}
+
+
+{% block include-css %}
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css">
+{% endblock %}
+
+
+{% block inline-css %}
+    <style>
+    body {
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+    }
+    </style>
+{% endblock %}
+
+
+{% block inline-js %}
+{% endblock %}
+
+
+{% block page-navbar %}
+    <h3>设备运行参数</h3>
+    <br>
+
+    <form method="post" class="form">
+    <div class="row">
+        <div class="col-xs-6">
+            <div class="input-group">
+                <span class="input-group-addon">远程定值温度设定</span>
+                <input type="number" class="form-control text-center" placeholder="{{ yaotiao.远程定值温度设定 }}" id="远程定值温度设定" name="远程定值温度设定">
+                <span class="input-group-addon">℃</span>
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <div class="input-group">
+                <span class="input-group-addon">远程流量设定</span>
+                <input type="number" class="form-control text-center" placeholder="{{ yaotiao.远程流量设定 }}" id="远程流量设定" name="远程流量设定">
+                <span class="input-group-addon">L/min</span>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-xs-3">
+            <label>
+                外循环
+                <input type="radio" name="远程内外循环切换" value="1">
+            </label>
+            &nbsp;&nbsp;
+            <label>
+                内循环
+                <input type="radio" name="远程内外循环切换" value="0">
+            </label>
+        </div>
+        <div class="col-xs-5">
+            <div class="input-group">
+                <span class="input-group-addon">远程强制控制加热器</span>
+                <input type="number" class="form-control text-center" value="0" placeholder="{{ yaotiao.远程强制控制加热器 }}" id="远程强制控制加热器" name="远程强制控制加热器">
+                <span class="input-group-addon">%</span>
+            </div>
+        </div>
+        <div class="col-xs-4">
+            <div class="input-group">
+                <span class="input-group-addon">远程运行程序号</span>
+                <input type="number" class="form-control text-center" placeholder="{{ yaotiao.远程运行程序号 }}" id="远程运行程序号" name="远程运行程序号">
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-sm-12 text-right">
+            <input type="submit" value="设置" class="btn btn-primary">
+            &nbsp;&nbsp;
+            <a title="如何设置"><span class="glyphicon glyphicon-question-sign"></span></a>
+        </div>
+    </div>
+    </form>
+{% endblock %}
+
+
+{% block page-body %}
+    <div id="tmp" hidden></div>
+{% endblock %}

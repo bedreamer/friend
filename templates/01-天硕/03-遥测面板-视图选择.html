@@ -1,0 +1,14 @@
+<div class="row">
+    <div class="col-xs-6">
+        <span>设备遥测数据</span>
+    </div>
+
+    <div class="col-xs-6 text-right">
+        <div class="btn-group-sm" role="group">
+            <a href="{{ request.path }}" class="btn btn-sm{% if not request.GET.show %} btn-primary{% else %} btn-default{% endif %}">仪表模式</a>
+            <a href="{{ request.path }}?show=table" class="btn btn-sm{% if request.GET.show == "table" %} btn-primary{% else %} btn-default{% endif %}">表格模式</a>
+            <a href="{{ request.path }}?show=grid" class="btn btn-sm{% if request.GET.show == "grid" %} btn-primary{% else %} btn-default{% endif %}">曲线模式</a>
+        </div>
+    </div>
+</div>
+

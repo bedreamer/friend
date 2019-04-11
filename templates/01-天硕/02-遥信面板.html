@@ -1,0 +1,96 @@
+{% extends "theme/base.html" %}
+
+{% block page-title %}设备遥信{% endblock %}
+
+{% block include-js %}
+    <script src="/static/js/jquery.js"></script>
+    <script src="/static/js/bootstrap.js"></script>
+{% endblock %}
+
+
+{% block inline-css %}
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css">
+{% endblock %}
+
+
+{% block inline-js %}
+    <script>
+        $(function () {
+            setInterval(reflush, 5000)	// 定时5秒刷新一次
+        });
+        function reflush() {
+            $.get(location.pathname, function (data) {
+                // 该例子无需执行返回的js，如果需要执行可使用jquery的html()，而不是innerHTML
+                $("#tmp")[0].innerHTML= data;    // 不加载执行js, 查找资料说可以使用jquery的parseHTML的，但是我这里报未定义函数，暂不深究了
+                $("#data").html($("#tmp").find("#data").html()); // ajax返回的html页面内容临时放入tmp中，方便获取指定dom节点。替换掉原来界面的数据
+                $("#tmp")[0].innerHTML = "";
+            });
+        }
+    </script>
+{% endblock %}
+
+
+{% block include-css %}
+    <style>
+    body {
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+    }
+    </style>
+{% endblock %}
+
+
+{% block page-navbar %}
+    <div id="data">
+    <table class="table table-bordered table-striped disabled" style="font-size: 10px;">
+        <caption>
+            <div class="row">
+                <div class="col-sm-12">设备遥信</div>
+            </div>
+        </caption>
+        <tr>
+            <th>{% if alarm %}<span class="text-success glyphicon glyphicon-ok-circle"></span> {% else %}<span class="text-danger glyphicon glyphicon-remove-circle"></span>{% endif %}数据有效性</th>
+            <th>{% if alarm.加热器超温报警 > 0 %}<span class="text-danger glyphicon glyphicon-warning-sign"></span> {% endif %}加热器超温报警</th>
+            <th>{% if alarm.压缩机排气温度高报警 > 0 %}<span class="text-danger glyphicon glyphicon-warning-sign"></span> {% endif %}压缩机排气温度高报警</th>
+            <th>{% if alarm.压缩机低压保护 > 0 %}<span class="text-danger glyphicon glyphicon-warning-sign"></span> {% endif %}压缩机低压保护</th>
+            <th>{% if alarm.压缩机高压保护 > 0 %}<span class="text-danger glyphicon glyphicon-warning-sign"></span> {% endif %}压缩机高压保护</th>
+            <th>{% if alarm.电源故障相序错误指示 > 0 %}<span class="text-danger glyphicon glyphicon-warning-sign"></span> {% endif %}电源故障相序错误指示</th>
+        </tr>
+        <tr>
+            <th>{% if alarm.供液压力传感器故障 > 0 %}<span class="text-danger glyphicon glyphicon-warning-sign"></span> {% endif %}供液压力传感器故障</th>
+            <th>{% if alarm.供液压力超压报警 > 0 %}<span class="text-danger glyphicon glyphicon-warning-sign"></span> {% endif %}供液压力超压报警</th>
+            <th>{% if alarm.回液压力传感器故障 > 0 %}<span class="text-danger glyphicon glyphicon-warning-sign"></span> {% endif %}回液压力传感器故障</th>
+            <th>{% if alarm.供液流量超限报警 > 0 %}<span class="text-danger glyphicon glyphicon-warning-sign"></span> {% endif %}供液流量超限报警</th>
+            <th>{% if alarm.膨胀罐液位传感器故障 > 0 %}<span class="text-danger glyphicon glyphicon-warning-sign"></span> {% endif %}膨胀罐液位传感器故障</th>
+            <th>{% if alarm.供液流量传感器故障 > 0 %}<span class="text-danger glyphicon glyphicon-warning-sign"></span> {% endif %}供液流量传感器故障</th>
+        </tr>
+        <tr>
+            <th>{% if status.加热器运行状态 > 0 %}<span class="text-success glyphicon glyphicon-play"></span> {% endif %}加热器运行状态</th>
+            <th>{% if status.压缩机运行指示 > 0 %}<span class="text-success glyphicon glyphicon-play"></span> {% endif %}压缩机运行指示</th>
+            <th>{% if status.循环泵运行指示 > 0 %}<span class="text-success glyphicon glyphicon-play"></span> {% endif %}循环泵运行指示</th>
+            <th>{% if status.电动三通阀开关 > 0 %}<span class="text-success glyphicon glyphicon-play"></span> {% endif %}电动三通阀开关</th>
+            <th>{% if status.电动球阀 > 0 %}<span class="text-success glyphicon glyphicon-play"></span> {% endif %}电动球阀</th>
+            <th>{% if status.电动球阀 > 0 %}<span class="text-success glyphicon glyphicon-play"></span> {% endif %}电动球阀</th>
+        </tr>
+    </table>
+
+    {% if lasterror or not alarm %}
+    <div class="row" style="position: absolute; top: 0; left: 0; float: left; width: 100%; height: 100%; background-color: rgba(0,0,0, 0.5);">
+        <br>
+        <h1 class="text-center text-danger text-center">设备通讯异常</h1>
+        <div class="row text-center">
+            <a href="/" target="_parent" title="重新打开设备" class="btn btn-primary">
+                <span class="glyphicon glyphicon-repeat"></span>
+                重新配置并打开设备
+            </a>
+        </div>
+    </div>
+    {% endif %}
+    </div>
+{% endblock %}
+
+
+{% block page-body %}
+    <div id="tmp" hidden></div>
+{% endblock %}

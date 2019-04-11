@@ -1,0 +1,21 @@
+<div class="row">
+    <div class="col-xs-6">
+        <span>设备控制调整</span>
+    </div>
+    <div class="col-xs-6 text-right">
+        <div class="btn-group" role="group" aria-label="...">
+            <a class="btn btn-default{% if page == 'const' %} btn-primary{% endif %}" href="/tianshuo/{{ dev_address }}/control/const/">
+                定值模式
+            </a>
+            <a class="btn btn-default{% if page == 'program' %} btn-primary{% endif %}" href="/tianshuo/{{ dev_address }}/control/program/">
+                程序模式
+            </a>
+            <a class="btn btn-default{% if page == 'manual' %} btn-primary{% endif %}" href="/tianshuo/{{ dev_address }}/control/manual/">
+                强制加热模式
+            </a>
+            <a class="btn btn-default{% if page == 'auto' %} btn-primary{% endif %}" href="/tianshuo/{{ dev_address }}/autocontrol/">
+                自动工步模式
+            </a>
+        </div>
+    </div>
+</div>

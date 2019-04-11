@@ -1,0 +1,93 @@
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+<meta charset="UTF-8">
+<link rel="stylesheet" href="/static/css/bootstrap.css" />
+<link type="text/css" href="/static/css/custom-theme/jquery-ui-1.10.0.custom.css" rel="stylesheet" />
+<link type="text/css" href="/static/assets/css/font-awesome.min.css" rel="stylesheet" />
+<link href="/static/assets/css/docs.css" rel="stylesheet">
+<link href="/static/assets/js/google-code-prettify/prettify.css" rel="stylesheet">
+
+<script src="/static/js/jquery.js" ></script>
+<script src="/static/js/jquery.color.js"></script>
+<script src="/static/assets/js/jquery-ui-1.10.0.custom.min.js" type="text/javascript"></script>
+
+<style>
+    .navbar-sm {
+        min-height: 35px;
+        line-height: 32px;
+    }
+    .navbar-sm .divider {
+        border-left: #cccccc 1px solid;
+        margin-left: 4px;
+        margin-right: 5px;
+        padding: 8px 0px 10px 0px;
+        width: 0px
+    }
+
+    .navbar-xs {
+        height: 20px;
+        line-height: 16px;
+        font-size: 10px;
+        background-color: #cdcbc4;
+    }
+    .navbar-xs .divider {
+        border-left: #7b7b7b 1px solid;
+        margin-left: 4px;
+        margin-right: 5px;
+        padding: 4px 0px 6px 0px;
+        width: 0px
+    }
+    .navbar-xs span {
+        line-height: 18px;
+    }
+
+    .status-icon {
+        font-size: 10px;
+        font-weight: bold;
+    }
+
+    .link {
+        cursor: hand;
+    }
+
+    .boxed {
+        border: #a1a1a1 1px solid;
+        border-radius: 3px;
+    }
+
+    body {
+        font-size: 12px;
+        line-height: 14px;
+    }
+</style>
+
+<script>
+    function getCurrentDate() {
+        var now = new Date();
+        var year = now.getFullYear(); //得到年份
+        var month = now.getMonth();//得到月份
+        var date = now.getDate();//得到日期
+        var day = now.getDay();//得到周几
+        var hour = now.getHours();//得到小时
+        var minu = now.getMinutes();//得到分钟
+        var sec = now.getSeconds();//得到秒
+        month = month + 1;
+        if (month < 10) month = "0" + month;
+        if (date < 10) date = "0" + date;
+        if (hour < 10) hour = "0" + hour;
+        if (minu < 10) minu = "0" + minu;
+        if (sec < 10) sec = "0" + sec;
+        var time = year + "-" + month + "-" + date+ " " + hour + ":" + minu + ":" + sec;
+        return time;
+    }
+    {% if request.path != '/' %}
+        $(document).ready(function () {
+            function update_date_time() {
+                var datetime = getCurrentDate();
+                $('#id_datetime').html(datetime);
+            }
+            setInterval(update_date_time, 1000);
+            update_date_time();
+
+        });
+    {% endif %}
+</script>

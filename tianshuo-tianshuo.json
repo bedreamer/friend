@@ -1,0 +1,59 @@
+{
+  "step3": {
+    "mode": "",
+    "liuliang": null,
+    "wendu": null,
+    "jiaregonglv": null,
+    "xunhuan": "",
+    "ttl": -1,
+    "tiaojian": [
+      "newline.供液流量显示",
+      ">",
+      "0",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "true": "$auto",
+    "false": "$auto"
+  },
+  "step4": {
+    "mode": "加热模式",
+    "liuliang": null,
+    "wendu": null,
+    "jiaregonglv": null,
+    "xunhuan": "内循环",
+    "ttl": -1,
+    "tiaojian": [
+      "newline.供液压力显示",
+      ">",
+      "10",
+      "and",
+      "newline.供液压力显示",
+      ">",
+      "20"
+    ],
+    "true": "$auto",
+    "false": "$auto"
+  },
+  "step5": {
+    "mode": "自动模式",
+    "liuliang": null,
+    "wendu": null,
+    "jiaregonglv": null,
+    "xunhuan": "",
+    "ttl": 180,
+    "tiaojian": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "true": "$auto",
+    "false": "$auto"
+  }
+}

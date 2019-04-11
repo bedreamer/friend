@@ -1,0 +1,206 @@
+{% extends "theme/base.html" %}
+
+{% block page-title %}设备遥信{% endblock %}
+
+{% block include-js %}
+    <script src="/static/js/jquery.js"></script>
+    <script src="/static/js/bootstrap.js"></script>
+    <script src="/static/js/jquery.tempgauge.js"></script>
+    <script src="/static/js/jquery.AshAlom.gaugeMeter-2.0.0.min.js"></script>
+{% endblock %}
+
+
+{% block include-css %}
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css">
+{% endblock %}
+
+
+{% block inline-css %}
+    <style>
+        body {
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        .xxxx {
+            margin-left: auto;
+            margin-right: auto;
+            Position:        relative;
+            text-align:      center;
+            Overflow:        hidden;
+            Cursor:          pointer;
+        }
+
+        .GaugeMeter{
+            margin-left: auto;
+            margin-right: auto;
+            Position:        relative;
+            text-align:      center;
+            Overflow:        hidden;
+            Cursor:          pointer;
+        }
+
+        .GaugeMeter span,
+        .GaugeMeter b{
+          //Margin:          0 23%;
+          Width:           100%;
+          Position:        Absolute;
+          Text-align:      Center;
+          Display:         Inline-Block;
+          Color:           RGBa(0,0,0,.8);
+          Font-Weight:     100;
+          Font-Family:     "Open Sans", Arial;
+          Overflow:        Hidden;
+          White-Space:     NoWrap;
+          Text-Overflow:   Ellipsis;
+        }
+
+        .GaugeMeter[data-style="Semi"] b{
+          Margin:          0 10%;
+          Width:           80%;
+        }
+
+        .GaugeMeter s,
+        .GaugeMeter u{
+          Text-Decoration: None;
+          Font-Size:       .49em;
+          Opacity:         .5;
+        }
+
+        .GaugeMeter b{
+          Color:           Black;
+          Font-Weight:     300;
+          Opacity:         .8;
+        }
+    </style>
+{% endblock %}
+
+
+{% block inline-js %}
+    <script>
+        function draw_all_graphic() {
+            let options1 = {
+                showLabel: true,
+                minTemp: -5,
+                maxTemp: 100,
+                fillColor: "#ff8d38",
+                labelSize: 20,
+                defaultTemp: {{ yaoce.供液温度显示|default:0 }}
+            };
+            $(".tempGauge1").tempGauge(options1);
+
+            let options2 = {
+                showLabel: true,
+                minTemp: -5,
+                maxTemp: 100,
+                fillColor: "#ff8d38",
+                labelSize: 20,
+                defaultTemp: {{ yaoce.回液温度显示|default:0 }}
+            };
+            $(".tempGauge2").tempGauge(options2);
+
+            let options3 = {
+                showLabel: true,
+                minTemp: -5,
+                maxTemp: 100,
+                fillColor: "#ff8d38",
+                labelSize: 20,
+                defaultTemp: {{ yaoce.排气温度显示|default:0 }}
+            };
+            $(".tempGauge3").tempGauge(options3);
+
+            let options4 = {
+                showLabel: true,
+                minTemp: -5,
+                maxTemp: 100,
+                fillColor: "#ff8d38",
+                labelSize: 20,
+                defaultTemp: {{ yaoce.冷凝液温度显示|default:0 }}
+            };
+            $(".tempGauge4").tempGauge(options4);
+
+            $("#GaugeMeter_1").gaugeMeter();
+            $("#GaugeMeter_2").gaugeMeter();
+            $("#GaugeMeter_3").gaugeMeter();
+            $("#GaugeMeter_4").gaugeMeter();
+            $("#GaugeMeter_5").gaugeMeter();
+        }
+        $(document).ready(draw_all_graphic);
+
+    </script>
+    <script>
+        $(function () {
+            setInterval(reflush, 5000)	// 定时5秒刷新一次
+        });
+        function reflush() {
+            $.get(location.pathname, function (data) {
+                // 该例子无需执行返回的js，如果需要执行可使用jquery的html()，而不是innerHTML
+                $("#tmp")[0].innerHTML= data;    // 不加载执行js, 查找资料说可以使用jquery的parseHTML的，但是我这里报未定义函数，暂不深究了
+                $("#data").html($("#tmp").find("#data").html()); // ajax返回的html页面内容临时放入tmp中，方便获取指定dom节点。替换掉原来界面的数据
+                $("#tmp")[0].innerHTML = "";
+                draw_all_graphic();
+            });
+        }
+    </script>
+{% endblock %}
+
+
+{% block page-navbar %}
+    <div class="row">
+        <div class="col-sm-12">
+            {% include "01-天硕/03-遥测面板-视图选择.html" %}
+        </div>
+    </div>
+    <br>
+    <div class="row" id="data">
+        <!--仪表参考自： http://www.htmleaf.com/Demo/201510202687.html-->
+        <div class="col-sm-2">
+            <div class="GaugeMeter" id="GaugeMeter_1" data-append="bar" data-width="10" data-style="Semi" data-size="200" data-theme="Red-Green" data-percent="{{ yaoce.供液压力显示 }}"></div>
+        </div>
+        <div class="col-sm-2">
+            <div class="GaugeMeter" id="GaugeMeter_2" data-append="bar" data-width="10" data-style="Semi" data-size="200" data-theme="Red-Green" data-percent="{{ yaoce.回液压力显示 }}"></div>
+        </div>
+        <div class="col-sm-2">
+            <div class="GaugeMeter" id="GaugeMeter_3" data-append="L/min" data-width="8" data-size="200" data-stripe="2" data-theme="DarkRed-LightRed" data-percent="{{ yaoce.供液流量显示 }}"></div>
+        </div>
+        <div class="col-sm-1">
+            <br><br><br>
+            <div class="GaugeMeter" id="GaugeMeter_4" data-append="%" data-size="100" data-theme="Red-Green" data-percent="{{ yaoce.膨胀罐液位显示 }}"></div>
+        </div>
+        <div class="col-sm-1">
+            <br><br><br>
+            <div class="GaugeMeter" id="GaugeMeter_5" data-append="%" data-size="100" data-theme="Red-Green" data-percent="{{ yaoce.阀门开度显示 }}"></div>
+        </div>
+
+        <div class="col-sm-1 xxxx">
+            <div class="tempGauge1">{{ yaoce.供液温度显示 }} °C</div>
+        </div>
+        <div class="col-sm-1 xxxx">
+            <div class="tempGauge2">{{ yaoce.回液温度显示 }} °C</div>
+        </div>
+        <div class="col-sm-1 xxxx">
+            <div class="tempGauge3">{{ yaoce.排气温度显示 }} °C</div>
+        </div>
+        <div class="col-sm-1 xxxx">
+            <div class="tempGauge4">{{ yaoce.冷凝液温度显示 }} °C</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2 text-center">供液压力显示</div>
+        <div class="col-sm-2 text-center">回液压力显示</div>
+        <div class="col-sm-2 text-center">供液流量显示</div>
+        <div class="col-sm-1 text-center">膨胀罐液位显示</div>
+        <div class="col-sm-1 text-center">阀门开度显示</div>
+
+        <div class="col-sm-1 text-center">供液温度显示</div>
+        <div class="col-sm-1 text-center">回液温度显示</div>
+        <div class="col-sm-1 text-center">排气温度显示</div>
+        <div class="col-sm-1 text-center">冷凝液温度显示</div>
+    </div>
+{% endblock %}
+
+
+{% block page-body %}
+    <div id="tmp" hidden></div>
+{% endblock %}
