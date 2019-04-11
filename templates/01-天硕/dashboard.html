@@ -52,7 +52,7 @@
 
     <div class="row">
         <div class="col-sm-12" title="设备遥调面板">
-            <iframe class="inline-iframe" src="/{{ dev_model }}/{{ dev_address }}/control/{% if request.control_page %}{{ request.control_page }}/{% endif %}" width="100%" height="230px" frameborder="0"></iframe>
+            <iframe class="inline-iframe" src="/{{ dev_model }}/{{ dev_address }}/control/{% if request.GET.control_method %}{{ request.GET.control_method }}/{% endif %}" width="100%" height="230px" frameborder="0"></iframe>
         </div>
     </div>
 

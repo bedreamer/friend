@@ -4,16 +4,16 @@
     </div>
     <div class="col-xs-6 text-right">
         <div class="btn-group" role="group" aria-label="...">
-            <a class="btn btn-default{% if page == 'const' %} btn-primary{% endif %}" href="/tianshuo/{{ dev_address }}/control/const/">
+            <a class="btn btn-default{% if control_method == 'const' %} btn-primary{% endif %}" href="/tianshuo/{{ dev_address }}/control/const/">
                 定值模式
             </a>
-            <a class="btn btn-default{% if page == 'program' %} btn-primary{% endif %}" href="/tianshuo/{{ dev_address }}/control/program/">
+            <a class="btn btn-default{% if control_method == 'program' %} btn-primary{% endif %}" href="/tianshuo/{{ dev_address }}/control/program/">
                 程序模式
             </a>
-            <a class="btn btn-default{% if page == 'manual' %} btn-primary{% endif %}" href="/tianshuo/{{ dev_address }}/control/manual/">
+            <a class="btn btn-default{% if control_method == 'manual' %} btn-primary{% endif %}" href="/tianshuo/{{ dev_address }}/control/manual/">
                 强制加热模式
             </a>
-            <a class="btn btn-default{% if page == 'auto' %} btn-primary{% endif %}" href="/tianshuo/{{ dev_address }}/autocontrol/">
+            <a class="btn btn-default{% if control_method == 'auto' or request.GET.control_method == 'auto' %} btn-primary{% endif %}" href="/tianshuo/{{ dev_address }}/autocontrol/">
                 自动工步模式
             </a>
         </div>

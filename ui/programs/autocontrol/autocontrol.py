@@ -144,25 +144,36 @@ class Solution:
         else:
             logging.error("无法支持的模式:" + self.step['mode'])
 
-    def step_switch_out(self, r, step_name):
+    def step_switch_out(self, r, step_name, next_name=None):
         # 工步切出处理
         step = self.solution_json[step_name]
+        try:
+            next_step = self.solution_json[next_name]
+        except:
+            next_step = {'mode': "invalid mode"}
+
+        if step['mode'] != next_step['mode']:
+            diff_mode = True
+        else:
+            diff_mode = False
 
         logging.info("switch out step: {}".format(step_name))
-        if step['mode'] == '自动模式':
+        if step['mode'] == '自动模式' and diff_mode is True:
             self.control(r, '远程停止', 1)
-        elif step['mode'] == '循环模式':
+        elif step['mode'] == '循环模式' and diff_mode is True:
             # 启动循环泵， 1启动， 0关闭
             self.control(r, '远程排汽加液_启动循环泵', 0)
-        elif step['mode'] == '加热模式':
+        elif step['mode'] == '加热模式' and diff_mode is True:
             # 关闭加热器
             self.control(r, '远程强制控制加热器', 0)
             # 启动循环泵， 1启动， 0关闭
             self.control(r, '远程排汽加液_启动循环泵', 0)
-        elif step['mode'] == '制冷模式':
+        elif step['mode'] == '制冷模式' and diff_mode is True:
             self.control(r, '远程停止', 1)
         elif step['mode'] == '待机模式':
             self.control(r, '远程停止', 1)
+        elif diff_mode is False:
+            logging.info("下一工步模式相同，不作处理..")
         else:
             self.control(r, '远程停止', 1)
             logging.error("无法支持的模式:" + step['mode'], "自动停机")
@@ -242,23 +253,22 @@ class Solution:
 
         if duration >= int(self.step['ttl']) and self.step['ttl'] > 0:
             # 工步因产生超时，发生切换
-            next = self.step['true']
+            next_step_name = self.step['true']
 
-            self.step_switch_out(r, self.step['name'])
-
-            if next != '$auto':
+            if next_step_name == '$auto':
                 # 通知切出事件
-                self.step = self.solution_json[next]
-                return
+                number = self.get_true_auto_next(self.step['name'])
+                if number is None:
+                    next_step_name = None
+                else:
+                    next_step_name = 'step%d' % number
 
-            number = self.get_true_auto_next(self.step['name'])
-            if number is None:
-                # 工步全部执行结束了
+            self.step_switch_out(r, self.step['name'], next_step_name)
+            if next_step_name is None:
                 self.step = None
                 return
 
-            next = 'step%d' % number
-            self.step_switch_in(r, next)
+            self.step_switch_in(r, next_step_name)
             return
 
         _compare = {
@@ -314,24 +324,24 @@ class Solution:
             return
 
         if not result:
-            next = self.step['false']
-            if next == '$auto':
+            next_step_name = self.step['false']
+            if next_step_name == '$auto':
                 # 条件为假，$auto不切换
                 return
         else:
-            next = self.step['true']
+            next_step_name = self.step['true']
 
-        if next == '$auto':
+        if next_step_name == '$auto':
             number = self.get_true_auto_next(self.step['name'])
             if number is None:
                 # 工步全部执行结束了
                 self.step = None
                 return
 
-            next = 'step%d' % number
+            next_step_name = 'step%d' % number
 
-        self.step_switch_out(r, self.step['name'])
-        self.step_switch_in(r, next)
+        self.step_switch_out(r, self.step['name'], next_step_name)
+        self.step_switch_in(r, next_step_name)
 
     def run_forever(self):
         r = redis.Redis(connection_pool=settings.redis_pool)

@@ -25,6 +25,25 @@
 
 
 {% block inline-js %}
+    <script>
+        $(document).ready(function () {
+            $("#outer_loop").click(function () {
+                $("#outer_loop_form").submit();
+            });
+
+            $("#inner_loop").click(function () {
+                $("#inner_loop_form").submit();
+            });
+
+            $("#start_1").click(function () {
+                $("#start_1_form").submit();
+            });
+
+            $("#stop_1").click(function () {
+                $("#stop_1_form").submit();
+            });
+        });
+    </script>
 {% endblock %}
 
 
@@ -33,57 +52,71 @@
     <br>
 
     <form method="post" class="form">
+        <div class="row">
+            <div class="col-xs-6">
+                <div class="input-group">
+                    <span class="input-group-addon">远程强制控制加热器</span>
+                    <input type="number" min="0" required class="form-control text-center" placeholder="{{ control.远程强制控制加热器 }}" id="远程强制控制加热器" name="远程强制控制加热器">
+                    <span class="input-group-addon">%</span>
+                </div>
+            </div>
+
+            <div class="col-xs-4">
+                <div class="input-group">
+                    <span class="input-group-addon">远程流量设定</span>
+                    <input type="number" required min="0" class="form-control text-center" placeholder="{{ control.远程流量设定 }}" id="远程流量设定" name="远程流量设定">
+                    <span class="input-group-addon">L/min</span>
+                </div>
+            </div>
+            <div class="col-xs-2">
+                <input type="number" hidden value="0" name="远程运行程序号">
+                <input type="submit" value="设置" class="btn btn-block btn-primary">
+            </div>
+        </div>
+    </form>
+
+    <br>
+
     <div class="row">
         <div class="col-xs-6">
-            <div class="input-group">
-                <span class="input-group-addon">远程定值温度设定</span>
-                <input type="number" class="form-control text-center" placeholder="{{ yaotiao.远程定值温度设定 }}" id="远程定值温度设定" name="远程定值温度设定">
-                <span class="input-group-addon">℃</span>
+            <div class="btn-group" role="group" aria-label="...">
+                <a class="btn btn-default disabled">远程内外循环切换</a>
+                <a class="btn{% if control.远程内外循环切换 == 1 %} btn-primary{% else %} btn-default{% endif %}" id="outer_loop">外循环</a>
+                <a class="btn{% if control.远程内外循环切换 == 0 %} btn-primary{% else %} btn-default{% endif %}" id="inner_loop">内循环</a>
             </div>
         </div>
-        <div class="col-xs-6">
-            <div class="input-group">
-                <span class="input-group-addon">远程流量设定</span>
-                <input type="number" class="form-control text-center" placeholder="{{ yaotiao.远程流量设定 }}" id="远程流量设定" name="远程流量设定">
-                <span class="input-group-addon">L/min</span>
-            </div>
-        </div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="col-xs-3">
-            <label>
-                外循环
-                <input type="radio" name="远程内外循环切换" value="1">
-            </label>
-            &nbsp;&nbsp;
-            <label>
-                内循环
-                <input type="radio" name="远程内外循环切换" value="0">
-            </label>
-        </div>
-        <div class="col-xs-5">
-            <div class="input-group">
-                <span class="input-group-addon">远程强制控制加热器</span>
-                <input type="number" class="form-control text-center" value="0" placeholder="{{ yaotiao.远程强制控制加热器 }}" id="远程强制控制加热器" name="远程强制控制加热器">
-                <span class="input-group-addon">%</span>
-            </div>
-        </div>
-        <div class="col-xs-4">
-            <div class="input-group">
-                <span class="input-group-addon">远程运行程序号</span>
-                <input type="number" class="form-control text-center" placeholder="{{ yaotiao.远程运行程序号 }}" id="远程运行程序号" name="远程运行程序号">
+
+        <div class="col-xs-6 text-right">
+            <div class="btn-group" role="group" aria-label="...">
+                <a class="btn btn-default disabled">远程排汽加液</a>
+                <a class="btn{% if control.远程排汽加液_启动循环泵 == 1 %} btn-primary{% else %} btn-default{% endif %}" id="start_1">
+                    <span class="glyphicon glyphicon-play text-success"></span>
+                    启动
+                </a>
+                <a class="btn{% if control.远程排汽加液_启动循环泵 == 0%} btn-primary{% else %} btn-default{% endif %}" id="stop_1">
+                    <span class="glyphicon glyphicon-stop text-danger"></span>
+                    停止
+                </a>
             </div>
         </div>
     </div>
-    <br>
-    <div class="row">
-        <div class="col-sm-12 text-right">
-            <input type="submit" value="设置" class="btn btn-primary">
-            &nbsp;&nbsp;
-            <a title="如何设置"><span class="glyphicon glyphicon-question-sign"></span></a>
-        </div>
-    </div>
+
+
+    <form method="post" class="form" id="start_1_form" hidden>
+        <input name="远程排汽加液_启动循环泵" value="1">
+    </form>
+
+    <form method="post" class="form" id="stop_1_form" hidden>
+        <input name="远程排汽加液_启动循环泵" value="0">
+    </form>
+
+    <form method="post" class="form" id="outer_loop_form" hidden>
+        <input name="远程内外循环切换" value="1">
+        <input name="control" value="1">
+    </form>
+    <form method="post" class="form" id="inner_loop_form" hidden>
+        <input name="远程内外循环切换" value="0">
+        <input name="control" value="1">
     </form>
 {% endblock %}
 

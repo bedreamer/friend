@@ -288,7 +288,7 @@ def show_autocontrol_page(request, dev_address):
 
     context['dev_model'] = dev_model
     context['dev_address'] = dev_address
-    context['page'] = 'auto'
+    context['control_method'] = 'auto'
 
     return render(request, "00-工步/06-工步控制面板.html", context=context)
 
@@ -339,7 +339,7 @@ def show_control_page_by_const(request, dev_address):
         return HttpResponseRedirect(request.path)
 
     context = dict()
-    context['page'] = 'const'
+    context['control_method'] = 'const'
     context['dev_model'] = dev_model
     context['dev_address'] = dev_address
     yaotiao_path = "%s:%d:设置参数-读出" % (dev_model, dev_address)
@@ -386,7 +386,7 @@ def show_control_page_by_program(request, dev_address):
     context = dict()
     context['dev_model'] = dev_model
     context['dev_address'] = dev_address
-    context['page'] = 'program'
+    context['control_method'] = 'program'
     yaotiao_path = "%s:%d:设置参数-读出" % (dev_model, dev_address)
     txt_yaotiao = r.get(yaotiao_path)
     if txt_yaotiao:
@@ -399,11 +399,28 @@ def show_control_page_by_program(request, dev_address):
 
 def show_control_page_by_manual(request, dev_address):
     r = redis.Redis(connection_pool=cache.redis_pool)
-    context = dict()
+    if request.method == 'POST':
+        try:
+            _ = request.POST['control']
+            try:
+                control(r, dev_address, '远程内外循环切换', int(request.POST['远程内外循环切换']))
+            except:
+                pass
 
+            try:
+                control(r, dev_address, '远程排汽加液_启动循环泵', int(request.POST['远程排汽加液_启动循环泵']))
+            except:
+                pass
+        except:
+            control(r, dev_address, '远程定值程序模式选择', 1)
+            control(r, dev_address, '远程流量设定', float(request.POST['远程流量设定']))
+            control(r, dev_address, '远程强制控制加热器', float(request.POST['远程强制控制加热器']))
+        return HttpResponseRedirect(request.path)
+
+    context = dict()
     context['dev_model'] = dev_model
     context['dev_address'] = dev_address
-    context['page'] = 'manual'
+    context['control_method'] = 'manual'
     yaotiao_path = "%s:%d:设置参数-读出" % (dev_model, dev_address)
     txt_yaotiao = r.get(yaotiao_path)
     if txt_yaotiao:
@@ -429,6 +446,7 @@ urlpatterns = [
     path("<int:dev_address>/control/const/", show_control_page_by_const),
     path("<int:dev_address>/control/program/", show_control_page_by_program),
     path("<int:dev_address>/control/manual/", show_control_page_by_manual),
+    path("<int:dev_address>/control/auto/", show_autocontrol_page),
 
     path("<int:dev_address>/yaokong/", show_yaokong_page),
     path("<int:dev_address>/autocontrol/", show_autocontrol_page),

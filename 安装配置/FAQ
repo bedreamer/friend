@@ -1,0 +1,47 @@
+windows10环境配置
+===============
+
+安装及初始化
+---------
+1. 从 Microsoft Store 搜索 Debian，下载并安装该子系统
+
+2. 开启Window 的linux子系统支持功能，这一步需要重启
+
+3. 重启后再桌面空白处点击右键，同时按住SHIFT键，选择在此处打开Powershell，执行如下命令:
+    > bash
+   进入linux命令行环境后键入如下命令
+sudo cat << EOF > /etc/apt/sources.list
+deb http://mirrors.163.com/debian/ stretch main non-free contrib
+deb http://mirrors.163.com/debian/ stretch-updates main non-free contrib
+deb http://mirrors.163.com/debian/ stretch-backports main non-free contrib
+deb-src http://mirrors.163.com/debian/ stretch main non-free contrib
+deb-src http://mirrors.163.com/debian/ stretch-updates main non-free contrib
+deb-src http://mirrors.163.com/debian/ stretch-backports main non-free contrib
+deb http://mirrors.163.com/debian-security/ stretch/updates main non-free contrib
+deb-src http://mirrors.163.com/debian-security/ stretch/updates main non-free contrib
+EOF
+
+sudo apt-get update
+sudo apt-get install redis-server
+
+sudo cat << EOF > /startup.sh
+redis-server --port 6379
+EOF
+
+sudo chmod +x startup.sh
+
+4. 在桌面空白处新建一个空白文档，重命名为wslstart.bat, 并将如下内容拷贝进去并保存：
+powershell -WindowStyle Hidden -Command "bash /startup.sh"
+
+5. 同时安装WIN和R键，调出运行窗口，键入：
+    > shell:startup
+
+6. 将第四步编辑的wslstart.bat放到刚刚弹出的文件夹内，至此windows部分的自动启动功能配置完毕
+
+7. 安装vcredist_x64.exe VC90.MFC补丁，使用USBCAN-2E-U设备时需要安装
+8. 从网站https://www.python.org 下载python3.6并安装，安装时附加安装pip，并解除文件路径的246个字节的限制
+9. 安装python功能包，命令如下:
+    > pip3 install django redis pyserial psutil
+
+10. 重启
+11. 启动

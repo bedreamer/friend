@@ -40,5 +40,5 @@ if __name__ == '__main__':
     while True:
         frame_list = usbcan.c_get_frame(dev_type_number, dev_idx, dev_channel, receive_frame_count_once, receive_frame_delay_in_ms)
         for frame in frame_list:
-            print(frame)
+            #print(frame)
             bms.on_frame(frame.id, frame.bytes_data)
