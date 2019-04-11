@@ -291,6 +291,7 @@ def show_autocontrol_page(request, dev_address):
     context['control_method'] = 'auto'
 
     return render(request, "00-工步/06-工步控制面板.html", context=context)
+    #return render(request, "00-工步/03-运行工步.html", context=context)
 
 
 def show_autocontrol_edit_page(request, dev_address):

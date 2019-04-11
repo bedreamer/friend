@@ -1,0 +1,81 @@
+{% extends "theme/base.html" %}
+
+{% block page-title %}设备遥信{% endblock %}
+
+{% block include-js %}
+    <script src="/static/js/jquery.js"></script>
+    <script src="/static/js/bootstrap.js"></script>
+{% endblock %}
+
+{% block include-css %}
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css">
+{% endblock %}
+
+{% block inline-css %}
+    <style>
+    body {
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+    }
+
+    .start {
+        display: block;
+        width: 100px;
+        height: 100px;
+        font-size: 40px;
+        line-height: 60px;
+        padding: 8px;
+        color: red;
+        border: #337ab7 solid 12px;
+        border-radius: 50px;
+    }
+
+    .start:hover {
+        color: green;
+        border-color: red;
+        cursor: pointer;
+    }
+
+    .stop {
+        display: block;
+        width: 100px;
+        height: 100px;
+        font-size: 40px;
+        line-height: 60px;
+        padding: 8px;
+        color: red;
+        border: #337ab7 solid 12px;
+        border-radius: 50px;
+    }
+
+    .stop:hover {
+        color: green;
+        border-color: red;
+        cursor: pointer;
+    }
+    </style>
+{% endblock %}
+
+
+{% block inline-js %}
+{% endblock %}
+
+
+{% block page-navbar %}
+{% endblock %}
+
+
+{% block page-body %}
+    <div class="row">
+
+        <div class="col-xs-6 text-center">
+            <div><span class="glyphicon glyphicon-play start"></span></div>
+        </div>
+
+        <div class="col-xs-6 text-center">
+            <span class="glyphicon glyphicon-stop stop"></span>
+        </div>
+
+    </div>
+{% endblock %}

@@ -94,10 +94,10 @@ def show_open_device_page(request):
 # Create your views here.
 urlpatterns = [
     path("", show_main_page),
-
     path("open/", show_open_device_page),
 
     path("tianshuo/", tianshuo.urls),
+
     path("v1.0/json/step/", autocontrol.urls),
 ]
 urls = (urlpatterns, "ui", "ui")
