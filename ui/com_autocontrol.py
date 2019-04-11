@@ -395,7 +395,7 @@ def start_step_autocontrol(request):
 
     command_line = " ".join([
         "python3",
-        settings.AUTOCONTROL_SCRIPT_PATH,
+        "'" + settings.AUTOCONTROL_SCRIPT_PATH + "'",
         "--dev-model", dev_model,
         "--dev-address", str(profile['dev_address']),
         "--bms-model", bms_model,

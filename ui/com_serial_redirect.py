@@ -26,7 +26,7 @@ def start_process_if_not_exist(com_dev, forward_port, baudrate, bytesize, stopbi
 
     command_line = " ".join([
         "python3",
-        settings.REDIRECT_SERIAL_SCRIPT_PATH,
+        "'" + settings.REDIRECT_SERIAL_SCRIPT_PATH + "'",
         "--parity", parity,
         "--stopbits", stopbit,
         "--bytesize", bytesize,

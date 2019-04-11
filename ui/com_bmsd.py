@@ -19,7 +19,7 @@ def start_process_if_not_exist(can_model, bms_model, can_bautrate, redis_host, r
 
     command_line = " ".join([
         "python3",
-        settings.BMSD_SCRIPT_PATH,
+        "'" + settings.BMSD_SCRIPT_PATH + "'",
         "--bms-model", bms_model,
         "--can-model", can_model,
         "--can-channel", str(0),

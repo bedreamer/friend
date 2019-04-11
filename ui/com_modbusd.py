@@ -34,7 +34,7 @@ def start_process_if_not_exist(model, dev_address, serial_host, serial_port, red
 
     command_line = " ".join([
         "python3",
-        settings.MODBUSD_SCRIPT_PATH,
+        "'" + settings.MODBUSD_SCRIPT_PATH + "'",
         "--model", model,
         "--address", str(dev_address),
         "--serial-host", serial_host,
