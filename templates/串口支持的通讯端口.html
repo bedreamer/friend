@@ -1,3 +1,8 @@
 {% for iface in may_interface_list %}
 <option value="{{ iface.device }}"{% if forloop.counter0 == 0 %} selected{% endif %}>{{ iface.device }}-{{ iface.description }}</option>
 {% endfor %}
+{% if host_name == 'am335x' %}
+{% for n in "12345" %}
+<option value="/dev/ttyO{{ n }}">AM335x-串口{{ n }}(/dev/ttyO{{ n }})</option>
+{% endfor %}
+{% endif %}
