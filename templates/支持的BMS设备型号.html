@@ -1,1 +1,4 @@
 <option value="s50ev" selected>XWD-6T</option>
+{% for bms in user_define_list %}
+    <option value="{{ bms.name }}">{{ bms.name }}</option>
+{% endfor %}

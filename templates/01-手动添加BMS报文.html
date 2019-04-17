@@ -1,0 +1,121 @@
+{% extends "theme/base.html" %}
+
+{% block page-title %}{% endblock %}
+
+{% block include-js %}
+    <script src="/static/js/jquery.js"></script>
+    <script src="/static/js/bootstrap.js"></script>
+{% endblock %}
+
+
+{% block inline-css %}
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css">
+{% endblock %}
+
+
+{% block inline-js %}
+{% endblock %}
+
+
+{% block include-css %}
+{% endblock %}
+
+
+{% block page-navbar %}
+    {% include "theme/base-dashboard-navbar.html" %}
+{% endblock %}
+
+
+{% block page-body %}
+    <h1>&nbsp;</h1>
+    <h1>自定义BMS报文</h1>
+    <hr>
+    <form method="post">
+        <div class="form-group">
+            <label for="bms_name">
+                <h3>标识名称</h3>
+            </label>
+            <input class="form-control" type="text" required name="bms_name" id="bms_name" placeholder="选择BMS时使用">
+        </div>
+        <br>
+        {% for i in "123" %}
+        <h4>
+            <div class="row">
+                {% if forloop.counter == 1 %}
+                <div class="col-xs-6 text-success">
+                    <span class="badge">Avr</span>
+                    <b>平均温度</b>
+                </div>
+                {% elif forloop.counter == 2 %}
+                <div class="col-xs-6 text-danger">
+                    <span class="badge">Max</span>
+                    <b>最高温度</b>
+                </div>
+                {% else %}
+                <div class="col-xs-6 text-primary">
+                    <span class="badge">Min</span>
+                    <b>最低温度</b>
+                </div>
+                {% endif %}
+                <div class="col-xs-6 text-right">
+                    <small>注: 实际值 = 报文值 * 倍率 + 偏移</small>
+                </div>
+            </div>
+        </h4>
+        <div class="row">
+            <div class="col-xs-3">
+                <div class="form-group">
+                    <label for="fid">
+                        帧ID
+                        {% if forloop.counter != 1 %}
+                            <a class="btn btn-xs btn-success" href="#" id="clone_{{ i }}"><small>克隆ID</small></a>
+                        {% endif %}
+                    </label>
+                    <input class="form-control" type="text" required name="fid_{{ i }}" id="fid" placeholder="16进制格式, eg: 0x123, 181556f4">
+                </div>
+            </div>
+            <div class="col-xs-1">
+                <div class="form-group">
+                    <label for="fid">起始位</label>
+                    <input class="form-control" type="number" min="0" max="63" required name="sb_{{ i }}" id="fid" placeholder="0~63">
+                </div>
+            </div>
+            <div class="col-xs-1">
+                <div class="form-group">
+                    <label for="fid">位长度</label>
+                    <input class="form-control" type="number" min="1" max="64" required name="bl_{{ i }}" id="fid" placeholder="1~64">
+                </div>
+            </div>
+            <div class="col-xs-1">
+                <div class="form-group">
+                    <label for="fid">倍率</label>
+                    <input class="form-control" type="text" required name="x_{{ i }}" id="fid" value="1">
+                </div>
+            </div>
+            <div class="col-xs-2">
+                <div class="form-group">
+                    <label for="fid">偏移</label>
+                    <input class="form-control" type="text" required name="offset_{{ i }}" id="fid" value="0">
+                </div>
+            </div>
+            <div class="col-xs-2">
+                <div class="form-group">
+                    <label for="fid">最大值</label>
+                    <input class="form-control" type="text" required name="max_{{ i }}" id="fid" value="-50">
+                </div>
+            </div>
+            <div class="col-xs-2">
+                <div class="form-group">
+                    <label for="fid">最小值</label>
+                    <input class="form-control" type="text" required name="min_{{ i }}" id="fid" value="50">
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <div class="row">
+            <div class="col-xs-offset-5 col-xs-2">
+                <input type="submit" value="确认添加" class="btn btn-primary btn-block">
+            </div>
+        </div>
+    </form>
+{% endblock %}

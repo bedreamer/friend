@@ -4,6 +4,7 @@ from django.http import *
 import serial.tools.list_ports
 import ui.device_tianshuo as tianshuo
 import ui.cache as cache
+import ui.bms as bms
 import redis
 import json
 import platform
@@ -22,7 +23,8 @@ import ui.com_bmsd as bmsd
 import ui.com_modbusd as modbusd
 # 用于自动化控制设备
 import ui.com_autocontrol as autocontrol
-
+# 用户自定义的BMS数据
+import ui.bms as bms
 
 def show_main_page(request):
     return HttpResponseRedirect("/open/")
@@ -46,6 +48,7 @@ def show_open_device_page(request):
         context['bmsd_process'] = bmsd.is_process_running()
         context['modbusd_process'] = modbusd.is_process_running()
         context['autocontrol_process'] = autocontrol.is_process_running()
+        context['user_define_list'] = bms.get_user_define_bms()
 
         return render(request, "page-打开设备.html", context=context)
     else:
@@ -99,5 +102,7 @@ urlpatterns = [
     path("tianshuo/", tianshuo.urls),
 
     path("v1.0/json/step/", autocontrol.urls),
+
+    path("bms/", bms.urls),
 ]
 urls = (urlpatterns, "ui", "ui")

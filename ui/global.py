@@ -1,11 +1,17 @@
 import codecs
 import os
 
-uname = os.uname()
-
-system_name = uname[0]
-host_name = uname[1]
-os_version = uname[2]
+try:
+    uname = os.uname()
+    # Linux am335x 3.2.0 #464 Thu Dec 29 15:28:17 CST 2016 armv7l unknown
+    # ('Linux', 'am335x', '3.2.0', '#464 Thu Dec 29 15:28:17 CST 2016', 'armv7l')
+    system_name = uname[0]
+    host_name = uname[1]
+    os_version = uname[2]
+except:
+    system_name = 'windows'
+    host_name = 'windows'
+    os_version = '10'
 
 
 def global_var(request):
