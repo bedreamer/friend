@@ -16,8 +16,12 @@ zlg_usb_can = {
 if __name__ == '__main__':
     FORMAT = '[%(levelname)s %(asctime)-15s] %(message)s'
     logging.basicConfig(format=FORMAT, level=logging.DEBUG)
-    
-    bms = __import__("model_" + settings.bms_model)
+
+    if settings.bms_model.index('UserDefine_') == 0:
+        bms = __import__("model_userdefine")
+    else:
+        bms = __import__("model_" + settings.bms_model)
+
     if settings.can_model not in zlg_usb_can:
         logging.error("不支持的型号", settings.can_model)
         exit(0)

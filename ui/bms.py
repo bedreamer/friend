@@ -23,6 +23,7 @@ def define_new_bms(request):
         seg['fid'] = int(request.POST['fid_' + i], 16)
         seg['sb'] = int(request.POST['sb_' + i])
         seg['bl'] = int(request.POST['bl_' + i])
+        seg['order'] = request.POST['order_' + i]
         seg['x'] = float(request.POST['x_' + i])
         seg['offset'] = float(request.POST['offset_' + i])
         seg['max'] = float(request.POST['max_' + i])
@@ -53,8 +54,19 @@ def get_user_define_bms():
     return bms_list
 
 
+def query_bms_as_json(request):
+    bms_profile_path = user_define_path + '/' + request.GET['bms_name']
+    try:
+        with codecs.open(bms_profile_path, encoding='utf8') as file:
+            bms = json.load(file)
+        return JsonResponse(bms, safe=False)
+    except:
+        return JsonResponse(None, safe=False)
+
+
 # Create your views here.
 urlpatterns = [
     path("define/", define_new_bms),
+    path("query/", query_bms_as_json),
 ]
 urls = (urlpatterns, "bms", "bms")

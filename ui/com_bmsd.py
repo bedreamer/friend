@@ -14,7 +14,7 @@ def is_process_running():
     return None
 
 
-def start_process_if_not_exist(can_model, bms_model, can_bautrate, redis_host, redis_port, redis_database):
+def start_process_if_not_exist(request, can_model, bms_model, can_bautrate, redis_host, redis_port, redis_database):
     old_process = is_process_running()
 
     command_line = " ".join([
@@ -26,7 +26,9 @@ def start_process_if_not_exist(can_model, bms_model, can_bautrate, redis_host, r
         "--can-bautrate", can_bautrate,
         "--redis-host", redis_host,
         "--redis-port", str(redis_port),
-        "--redis-database", str(redis_database)
+        "--redis-database", str(redis_database),
+        "--web-host", request.environ['REMOTE_ADDR'],
+        "--web-port", request.environ['SERVER_PORT']
     ])
 
     if platform.system().lower() != 'windows':

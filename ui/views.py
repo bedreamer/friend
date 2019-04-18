@@ -81,7 +81,7 @@ def show_open_device_page(request):
         modbusd.start_process_if_not_exist(dev_model, dev_address, serial_host, serial_forward_port, redis_host, redis_port, redis_database)
 
         # 启动BMSD驱动程序
-        bmsd.start_process_if_not_exist(can_iface, bms_model, can_bps, redis_host, redis_port, redis_database)
+        bmsd.start_process_if_not_exist(request, can_iface, bms_model, can_bps, redis_host, redis_port, redis_database)
 
         form = dict()
         for key, value in request.POST.items():
