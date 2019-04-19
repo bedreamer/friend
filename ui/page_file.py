@@ -25,32 +25,37 @@ def save_file(request, path):
 def show_file_context(request):
     try:
         path = request.GET['path']
+        return render(request, "02-文本编辑器/01-查看文件.html", {'file_readline_iter': file_readline_iter(path)})
     except MultiValueDictKeyError as e:
         return render(request, "02-文本编辑器/03-文件编辑器错误.html", {'error': e})
-
-    return render(request, "02-文本编辑器/01-查看文件.html", {'file_readline_iter': file_readline_iter(path)})
+    except FileNotFoundError as e:
+        return render(request, "02-文本编辑器/03-文件编辑器错误.html", {'error': e})
 
 
 def view_file_context(request):
     try:
         path = request.GET['path']
+        return render(request, "02-文本编辑器/00-只读文件.html", {'file_readline_iter': file_readline_iter(path)})
     except MultiValueDictKeyError as e:
         return render(request, "02-文本编辑器/03-文件编辑器错误.html", {'error': e})
+    except FileNotFoundError as e:
+        return render(request, "02-文本编辑器/03-文件编辑器错误.html", {'error': e})
 
-    return render(request, "02-文本编辑器/00-只读文件.html", {'file_readline_iter': file_readline_iter(path)})
 
 
 def edit_file_context(request):
     try:
         path = request.GET['path']
+        if request.method == 'GET':
+            return render(request, "02-文本编辑器/02-编辑文件.html", {'file_readline_iter': file_readline_iter(path)})
+        else:
+            save_file(request, path)
+            return HttpResponseRedirect(reverse('file_reader') + "?path=" + path)
     except MultiValueDictKeyError as e:
         return render(request, "02-文本编辑器/03-文件编辑器错误.html", {'error': e})
+    except FileNotFoundError as e:
+        return render(request, "02-文本编辑器/03-文件编辑器错误.html", {'error': e})
 
-    if request.method == 'GET':
-        return render(request, "02-文本编辑器/02-编辑文件.html", {'file_readline_iter': file_readline_iter(path)})
-    else:
-        save_file(request, path)
-        return HttpResponseRedirect(reverse('file_reader') + "?path=" + path)
 
 
 urlpatterns = [

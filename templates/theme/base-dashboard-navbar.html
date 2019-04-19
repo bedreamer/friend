@@ -15,6 +15,12 @@
                 </a>
                 <ul class="dropdown-menu">
                     <li>
+                        <a href="/{{ dev_model }}/{{ dev_address }}/">
+                            <span class="glyphicon glyphicon-info-sign"></span>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
                         <a href="/bms/define/?next={{ request.path }}">
                             <span class="glyphicon glyphicon-plus-sign text-success"></span>
                             定义新的BMS报文
@@ -22,13 +28,13 @@
                     </li>
                     <li class="divider" role="separator"></li>
                     <li>
-                        <a href="#">
+                        <a href="{% url 'file_viewer' %}?path={{ app_modbusd_dir }}/com.log">
                             <span class="text-primary" style="border: #2aabd2 solid 1px;">485</span>
                             查看串口通讯报文
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{% url 'file_viewer' %}?path={{ app_bmsd_dir }}/com.log">
                             <span class="text-primary" style="border: #2aabd2 solid 1px">CAN</span>
                             查看BMS通讯报文
                         </a>
