@@ -1,0 +1,38 @@
+{% extends "theme/base-0-12-0.html" %}
+
+{% block page-title %}{% endblock %}
+
+{% block include-js %}
+    <script src="/static/js/jquery.js"></script>
+    <script src="/static/js/bootstrap.js"></script>
+{% endblock %}
+
+
+{% block inline-css %}
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css">
+{% endblock %}
+
+
+{% block inline-js %}
+{% endblock %}
+
+
+{% block include-css %}
+{% endblock %}
+
+
+{% block page-navbar %}
+    {% include "theme/base-dashboard-navbar.html" %}
+{% endblock %}
+
+
+{% block page-body %}
+    <h1>&nbsp;</h1>
+    <form method="post" action="{% url 'file_editor' %}?path={{ request.GET.path|safe }}" enctype='multipart/form-data'>
+        <label for="context">正在编辑： {{ request.GET.path|safe }}</label>
+        <textarea name="file" rows="30" class="form-control" id="context">{% for line in file_readline_iter %}{{ line|safe }}{% endfor %}</textarea>
+        <br>
+        <a class="btn btn-default" href="{% url 'file_reader' %}?path={{ request.GET.path|safe }}">取消编辑</a>
+        <input type="submit" value="保存" class="btn btn-primary">
+    </form>
+{% endblock %}

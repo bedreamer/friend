@@ -1,10 +1,9 @@
 from django.shortcuts import render
-from django.urls import path
+from django.urls import path, include
 from django.http import *
 import serial.tools.list_ports
 import ui.device_tianshuo as tianshuo
 import ui.cache as cache
-import ui.bms as bms
 import redis
 import json
 import platform
@@ -25,6 +24,9 @@ import ui.com_modbusd as modbusd
 import ui.com_autocontrol as autocontrol
 # 用户自定义的BMS数据
 import ui.bms as bms
+# 文件编辑器
+import ui.page_file as file
+
 
 def show_main_page(request):
     return HttpResponseRedirect("/open/")
@@ -114,5 +116,7 @@ urlpatterns = [
     path("v1.0/json/step/", autocontrol.urls),
 
     path("bms/", bms.urls),
+
+    path("file/", include('ui.page_file'), name="file")
 ]
 urls = (urlpatterns, "ui", "ui")
