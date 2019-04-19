@@ -94,10 +94,20 @@ def show_open_device_page(request):
         return HttpResponseRedirect(url)
 
 
+def close_all_device(request):
+    """
+    关闭除redis外的所有进程
+    :param request:
+    :return:
+    """
+    return HttpResponseRedirect("/")
+
+
 # Create your views here.
 urlpatterns = [
     path("", show_main_page),
     path("open/", show_open_device_page),
+    path("close/", close_all_device),
 
     path("tianshuo/", tianshuo.urls),
 

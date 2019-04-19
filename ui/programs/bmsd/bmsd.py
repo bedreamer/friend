@@ -17,7 +17,7 @@ if __name__ == '__main__':
     FORMAT = '[%(levelname)s %(asctime)-15s] %(message)s'
     logging.basicConfig(format=FORMAT, level=logging.DEBUG)
 
-    if settings.bms_model.index('UserDefine_') == 0:
+    if settings.bms_model.find('UserDefine_') == 0:
         bms = __import__("model_userdefine")
     else:
         bms = __import__("model_" + settings.bms_model)

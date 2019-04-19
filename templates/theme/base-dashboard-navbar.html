@@ -7,7 +7,41 @@
             <li>
                 <h4>型号:<b>{{ dev_model }}</b>，地址:{{ dev_address }}, SN:<b>{{ dev_serial_number }}</b></h4>
             </li>
-            <li>&nbsp;</li>
+            <li>
+                <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="glyphicon glyphicon-menu-hamburger"></span>
+                    菜单
+                    <span class="glyphicon glyphicon-menu-down"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="/bms/define/?next={{ request.path }}">
+                            <span class="glyphicon glyphicon-plus-sign text-success"></span>
+                            定义新的BMS报文
+                        </a>
+                    </li>
+                    <li class="divider" role="separator"></li>
+                    <li>
+                        <a href="#">
+                            <span class="text-primary" style="border: #2aabd2 solid 1px;">485</span>
+                            查看串口通讯报文
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="text-primary" style="border: #2aabd2 solid 1px">CAN</span>
+                            查看BMS通讯报文
+                        </a>
+                    </li>
+                    <li class="divider" role="separator"></li>
+                    <li>
+                        <a href="/close/">
+                            <span class="glyphicon glyphicon-off text-danger"></span>
+                            关闭设备
+                        </a>
+                    </li>
+                </ul>
+            </li>
         </ul>
     </div>
 </nav>

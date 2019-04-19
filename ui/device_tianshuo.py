@@ -109,7 +109,7 @@ def show_yaoce_page(request, dev_address):
         context['yaoce'] = None
 
     bms_model = com_autocontrol.get_current_bms_model()
-    if bms_model.index('UserDefine_') == 0:
+    if bms_model.find('UserDefine_') == 0:
         bms = importlib.import_module("ui.bms_userdefine")
     else:
         bms = importlib.import_module('ui.bms_' + bms_model)

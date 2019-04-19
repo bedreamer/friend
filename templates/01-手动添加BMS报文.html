@@ -50,7 +50,7 @@
     <h1>&nbsp;</h1>
     <h1>自定义BMS报文</h1>
     <hr>
-    <form method="post">
+    <form method="post" action="{{ request.path }}?next={{ request.GET.next|default:"/" }}">
         <div class="form-group">
             <label for="bms_name">
                 <h3>标识名称</h3>

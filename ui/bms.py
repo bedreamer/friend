@@ -42,7 +42,12 @@ def define_new_bms(request):
     with codecs.open(bms_profile_path, mode='w', encoding='utf8') as file:
         json.dump(bms_profile, file, ensure_ascii=False, indent=2)
 
-    return HttpResponseRedirect('/')
+    try:
+        next = request.GET['next']
+    except:
+        next = '/'
+
+    return HttpResponseRedirect(next)
 
 
 def get_user_define_bms():
